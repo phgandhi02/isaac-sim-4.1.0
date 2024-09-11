@@ -1,0 +1,29 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.1.0"
+category = "Other"
+title = "Isaac Sim Throlling"
+description = "Control throttling behaviors for isaac sim"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+
+[dependencies]
+"omni.kit.window.preferences" = {}
+
+[[python.module]]
+name = "omni.isaac.throttling"
+
+[[python.module]]
+name = "omni.isaac.throttling.tests"
+
+[[test]]
+args = ["--/rtx/ecoMode/enabled=True"]
+dependencies = ["omni.kit.test", "omni.timeline"]

@@ -1,0 +1,43 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.0.2"
+category = "Simulation"
+title = "Block Worlds"
+description = "Generate 3D block worlds from 2D occupancy maps"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "block world"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.physx" = {}
+"omni.isaac.debug_draw" = {}
+"omni.kit.viewport.window" = {}
+"omni.kit.pip_archive" = {} # pulls in pillow
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+"omni.isaac.block_world" = {}
+
+[[python.module]]
+name = "omni.isaac.occupancy_map"
+
+[[python.module]]
+name = "omni.isaac.occupancy_map.tests"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+recursive = false
+
+[[test]]
+dependencies = [
+    "omni.isaac.nucleus" # test only
+]
+timeout = 960

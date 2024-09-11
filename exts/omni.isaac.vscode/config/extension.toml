@@ -1,0 +1,29 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.1.0"
+category = "Utility"
+title = "VS Code integration"
+description = "VS Code version of Omniverse's script editor"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "python", "vscode", "editor"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+# "omni.kit.uiapp" = {}
+# "omni.kit.notification_manager" = {}
+
+[[python.module]]
+name = "omni.isaac.vscode"
+
+[settings]
+exts."omni.isaac.vscode".host = "0.0.0.0"
+exts."omni.isaac.vscode".port = 8226
+exts."omni.isaac.vscode".carb_logs = true

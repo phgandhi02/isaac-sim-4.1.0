@@ -1,0 +1,28 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.1.4"
+category = "Simulation"
+title = "Isaac Sim Physics Inspector"
+description = "Inspect Physics Objects During Simulation"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "physics", "inspect",]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.physx" = {}
+"omni.isaac.dynamic_control" = {}
+"omni.isaac.ui" = {}
+
+[[python.module]]
+name = "omni.isaac.physics_inspector"
+
+[[python.module]]
+name = "omni.isaac.physics_inspector.tests"

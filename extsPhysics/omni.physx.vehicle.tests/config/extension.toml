@@ -1,0 +1,40 @@
+[package]
+category = "Internal"
+title = "PhysX Vehicle Tests"
+description="PhysX vehicle tests."
+repository = ""
+support_level = "Internal"
+
+[dependencies]
+"omni.physx.vehicle" = {}
+"omni.physx.tests" = {}
+"omni.physx.graph" = {}
+
+[[python.module]]
+name = "omni.physxvehicletests"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+
+[[test]]
+timeout = 1200
+dependencies = [
+   "omni.hydra.rtx",
+   "omni.kit.viewport.window",
+   "omni.kit.renderer.core",
+]
+args = [
+   "--no-window",
+   "--/app/asyncRendering=false", 
+   "--/app/file/ignoreUnsavedOnExit=true" , 
+   "--/renderer/multiGpu/autoEnable=false",
+   "--/app/profilerBackend=\"\"",
+   "--/rtx/materialDb/syncLoads=true",
+   "--/omni.kit.plugin/syncUsdLoads=true",
+   "--/rtx/hydra/materialSyncLoads=true",
+   "--/app/renderer/resolution/width=64",
+   "--/app/renderer/resolution/height=64",
+   "--/rtx/rendermode=\"rtx\""
+]
+pyCoverageFilter = ["omni.physxvehicle"]
+pyCoverageThreshold = 0

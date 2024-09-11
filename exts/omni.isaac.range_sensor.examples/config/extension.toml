@@ -1,0 +1,37 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.0.0"
+category = "Simulation"
+title = "Isaac Sim Range Sensor Examples"
+description = "Examples for the Range Sensor extension"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "physics", "sensor", "lidar", "examples"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.kit.menu.utils" = {}
+"omni.usd.schema.isaac" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+"omni.isaac.range_sensor" = {}
+
+[[python.module]]
+name = "omni.isaac.range_sensor.examples"
+
+[[python.module]]
+name = "omni.isaac.range_sensor.examples.lidar_info"
+
+[[python.module]]
+name = "omni.isaac.range_sensor.examples.ultrasonic_info"
+
+[[python.module]]
+name = "omni.isaac.range_sensor.examples.generic_info"

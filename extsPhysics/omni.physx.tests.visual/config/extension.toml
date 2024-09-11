@@ -1,0 +1,56 @@
+[package]
+category = "Internal"
+authors = ["NVIDIA"]
+title = "PhysX Visual Tests"
+description="Physx visual tests"
+repository = ""
+keywords = ["physx", "tests"]
+
+version = "106.0.20"
+
+icon = "icons/icon.png"
+preview_image = "icons/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+[dependencies]
+"omni.physx.tests" = {}
+"omni.physx.ui" = {}
+"omni.kit.property.physx" = {}
+"omni.kit.ui_test" = {}
+"omni.kit.viewport.utility" = {}
+
+[[python.module]]
+name = "omni.physxtestsvisual"
+
+[[test]]
+dependencies = [
+    "omni.hydra.rtx",
+    "omni.kit.viewport.window",
+    "omni.assets.plugins",
+    "omni.kit.renderer.core",
+    "omni.kit.primitive.mesh",
+    "omni.kit.renderer.capture",
+    "omni.kit.mainwindow",
+    "omni.kit.window.preferences",
+    "omni.physx.supportui"
+]
+args = [
+    "--/app/window/width=1280",
+    "--/app/window/height=1024",
+    "--/app/asyncRendering=false",
+    "--no-window",
+    "--/renderer/multiGpu/autoEnable=false",
+    "--/renderer/multiGpu/enabled=false",
+    "--/renderer/debug/validation/enabled=false",
+    "--/omni.kit.plugin/syncUsdLoads=true",
+]
+timeout = 2700
+pyCoverageFilter = ["omni.physx", "omni.physxcommands", "omni.kit.property.physx"]
+pyCoverageThreshold = 0

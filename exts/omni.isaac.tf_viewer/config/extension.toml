@@ -1,0 +1,33 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.1.0"
+category = "Utility"
+title = "TF Viewer"
+description = "Show the tf transform tree in the viewport"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "ROS2", "tf"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+
+[dependencies]
+"omni.ui.scene" = {}
+"omni.kit.uiapp" = {}
+"omni.kit.viewport.utility" = {}
+"omni.isaac.ros2_bridge" = {}
+
+[[python.module]]
+name = "omni.isaac.tf_viewer"
+
+[settings]
+exts."omni.isaac.tf_viewer".cpp = true
+
+[test]
+stdoutFailPatterns.exclude = [
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+]

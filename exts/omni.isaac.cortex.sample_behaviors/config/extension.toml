@@ -1,0 +1,27 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.0.5"
+category = "Simulation"
+title = "Isaac Cortex Sample Behaviors"
+description = "Sample Behaviors for Isaac Cortex"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "samples", "manipulation"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.0.0. Future versions will be indepedent from Isaac Sim"
+
+[dependencies]
+"omni.isaac.core" = {}
+"omni.isaac.cortex" = {}
+
+[[python.module]]
+name = "omni.isaac.cortex.sample_behaviors"

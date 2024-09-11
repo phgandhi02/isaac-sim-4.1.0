@@ -1,0 +1,32 @@
+[core]
+reloadable = false
+order = 0
+
+[package]
+version = "0.2.3"
+category = "Robotics"
+title = "Omni Isaac Cortex Sync"
+description = "Synchronization tools for connecting Isaac Cortex tools to the physical world."
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "robotics", "collaborative robotics", "digital twins"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.0.0. Future versions will be indepedent from Isaac Sim"
+
+[dependencies]
+"omni.isaac.cortex" = {}
+"omni.isaac.ros_bridge" = {}
+
+[[python.module]]
+name = "omni.isaac.cortex_sync"
+
+[[test]]
+stdoutFailPatterns.exclude = [
+    "*WARNING: cannot load logging configuration file*", # exclude warning as failure
+]

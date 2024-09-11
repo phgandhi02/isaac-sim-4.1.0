@@ -1,0 +1,68 @@
+[package]
+category = "Internal"
+authors = ["NVIDIA"]
+title = "PhysX Tests"
+description="PhysX tests"
+repository = ""
+keywords = ["physx", "tests"]
+
+version = "106.0.20"
+
+icon = "icons/icon.png"
+preview_image = "icons/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+[dependencies]
+"omni.physx" = {}
+"omni.physx.stageupdate" = {}
+"omni.physx.ui" = {}
+"omni.physx.commands" = {}
+"omni.kit.test" = {}
+"omni.ui" = {}
+"omni.ui.scene" = {}
+"omni.kit.stage_templates" = {}
+"omni.kit.window.toolbar" = {}
+"omni.usd" = {}
+"usdrt.scenegraph" = {}
+
+[[python.module]]
+name = "omni.physxtests"
+
+[settings]
+exts."omni.physx.tests".subTestsFilter = ""
+# physics tests asset path setting: if not overriden from command line or kit file it will get set when test ext is started 
+# up to either nucleus or S3 path (based on the setting below) and a current kitsdk version is appended
+physics.testsAssetsPath = ""
+
+
+[[test]]
+dependencies = [
+    "omni.assets.plugins",
+    "omni.kit.viewport.window",
+    "omni.kit.renderer.core",
+    "omni.kit.primitive.mesh",
+]
+args = [
+    "--/app/asyncRendering=false", 
+    "--/app/file/ignoreUnsavedOnExit=true" ,     
+    "--/renderer/multiGpu/autoEnable=false",
+    "--/app/profilerBackend=\"\"",
+    "--/rtx/materialDb/syncLoads=true",
+    "--/omni.kit.plugin/syncUsdLoads=true",
+    "--/rtx/hydra/materialSyncLoads=true",
+    "--/app/renderer/resolution/width=64",
+    "--/app/renderer/resolution/height=64",
+    "--no-window",
+    "--/rtx/rendermode=\"rtx\""
+]
+timeout = 1800
+pyCoverageFilter = ["omni.physx", "omni.physxcommands"]
+pyCoverageThreshold = 0

@@ -1,0 +1,29 @@
+[package]
+version = "1.1.0"
+category = "Simulation"
+title = "Isaac Sim Conveyor belt utility UI"
+description="UI components for omni.isaac.conveyor"
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+repository = ""
+
+keywords = ["kit", "example", "ui"]
+
+
+
+[dependencies]
+"omni.kit.test" = {}
+"omni.kit.uiapp" = {}
+"omni.kit.window.preferences" = {}
+"omni.isaac.ui"={}
+"omni.usd" = {}
+"omni.isaac.conveyor" = {}
+
+# Main module for the Python interface
+[[python.module]]
+name = "omni.isaac.conveyor.ui"
+
+[[python.module]]
+name = "omni.isaac.conveyor.ui.tests"

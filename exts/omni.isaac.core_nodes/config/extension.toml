@@ -1,0 +1,59 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.16.1"
+category = "Simulation"
+title = "Isaac Sim Core OmniGraph Nodes"
+description = "Core"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.isaac.core" = {}
+"omni.isaac.dynamic_control" = {}
+"omni.replicator.core" = {}
+"omni.graph" = {}
+"omni.kit.viewport.window" = {}
+"omni.kit.viewport.utility" = {}
+"omni.isaac.nucleus" = {}
+
+[[python.module]]
+name = "omni.isaac.core_nodes"
+
+[[python.module]]
+name = "omni.isaac.core_nodes.tests"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+recursive = false
+
+[fswatcher.patterns]
+include = ["*.ogn", "*.py"]
+exclude = ["Ogn*Database.py"]
+
+[[test]]
+timeout=900
+dependencies = [
+    "omni.kit.viewport.actions"
+]
+
+stdoutFailPatterns.exclude = [
+    '*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_core_nodes_IsaacComputeOdometry: [/TestGraph] Omnigraph Error: no chasis prim found*',
+    '*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_core_nodes_IsaacCreateRenderProduct: [/TestGraph] OmniGraph Error: Camera prim must be specified*',
+    '*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_core_nodes_IsaacSetCameraOnRenderProduct: [/TestGraph] OmniGraph Error: Camera prim must be specified*',
+    '*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_core_nodes_IsaacArticulationController: [/TestGraph] Omnigraph Error: No robot prim found for the articulation controller*',
+    '*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_core_nodes_IsaacArticulationState: [/TestGraph] OmniGraph Error: No robot prim found for the articulation state*',
+    '*[Error] [omni.isaac.core_nodes] Physics OnSimulationStep node detected in a non on-demand Graph. Node will only trigger events if the parent Graph is set to compute on-demand*',
+    '*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_core_nodes_IsaacReadWorldPose: [/TestGraph] Omnigraph Error: no input prim*',
+    "*[Error] [omni.physx.tensors.plugin] Articulation is not in a scene!*",
+    "*[Error] [omni.physx.tensors.plugin] Pattern '/panda' did not match any rigid bodies*",
+    "*[Error] [omni.physx.tensors.plugin] Provided pattern list did not match any articulations*",
+]

@@ -1,0 +1,26 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.0.0"
+category = "Simulation"
+title = "Block world extension for Isaac Sim Occupancy Map"
+description = "2D Occupancy Map Generation"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "occupancy map"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.kit.viewport.window" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+
+[[python.module]]
+name = "omni.isaac.block_world"

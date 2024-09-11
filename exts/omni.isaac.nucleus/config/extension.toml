@@ -1,0 +1,31 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.3.0"
+category = "Simulation"
+title = "Isaac Sim Nucleus"
+description = "Nucleus"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.isaac.version" = {}
+"omni.client" = {}
+
+[[python.module]]
+name = "omni.isaac.nucleus"
+
+[settings]
+persistent.isaac.asset_root.default = "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.1"
+persistent.isaac.asset_root.nvidia = "omniverse://localhost/NVIDIA"
+persistent.isaac.asset_root.isaac = "omniverse://localhost/NVIDIA/Assets/Isaac/4.1/Isaac"
+persistent.isaac.asset_root.cloud = "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.1"
+persistent.isaac.asset_root.timeout = 5.0

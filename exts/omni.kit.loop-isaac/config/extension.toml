@@ -1,0 +1,39 @@
+[package]
+# Semantic Versioning is used: https://semver.org/
+version = "1.2.0"
+category = "Internal"
+authors = ["NVIDIA"]
+title = "Isaac Loop Runner"
+description = "Custom Loop Runner for Isaac Sim"
+repository = ""
+keywords = ["isaac", "loop"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[[python.module]]
+name = "omni.kit.loop"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+recursive = false
+
+
+[settings]
+# Don't sync threads to the present thread
+app.runLoopsGlobal.syncToPresent = false
+
+# Frequency limit can be enabled per run loop:
+app.runLoops.main.rateLimitEnabled = true
+app.runLoops.main.rateLimitFrequency = 120
+app.runLoops.main.rateLimitUseBusyLoop = false
+
+app.runLoops.present.rateLimitEnabled = true
+app.runLoops.present.rateLimitFrequency = 120
+app.runLoops.present.rateLimitUseBusyLoop = false
+
+app.runLoops.rendering_0.rateLimitEnabled = true
+app.runLoops.rendering_0.rateLimitFrequency = 120
+app.runLoops.rendering_0.rateLimitUseBusyLoop = false

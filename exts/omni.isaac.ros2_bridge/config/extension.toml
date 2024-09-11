@@ -1,0 +1,88 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "2.31.4"
+category = "Simulation"
+title = "ROS2 Bridge"
+description = "ROS2 Bridge"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "ROS2"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.isaac.dynamic_control" = {}
+"omni.isaac.range_sensor" = {}
+"omni.isaac.core" = {}
+"omni.isaac.core_nodes" = {}
+"omni.syntheticdata" = {}
+"omni.replicator.core" = {}
+"omni.usd.schema.isaac" = {}
+"omni.graph" = {}
+"omni.graph.tools" = {}
+"omni.isaac.sensor" = {}
+"usdrt.scenegraph" = {}
+"omni.isaac.nucleus" = {}
+"omni.isaac.ui" = {}
+"omni.pip.compute" = {}
+
+[settings]
+exts."omni.isaac.ros2_bridge".ros_distro = "humble" # This setting specified which ros distro to fallback onto if none were sourced.
+exts."omni.isaac.ros2_bridge".publish_without_verification = false # This setting specifies if ROS2 publishers are enabled regardless of whether there are active subscriptions to their topics.
+exts."omni.isaac.ros2_bridge".publish_multithreading_disabled = false # This setting specifies if multithreading should be disabled for the ROS2 image publisher node
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge"
+
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge.tests"
+public = false
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge.scripts.samples.ros_samples"
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge.scripts.samples.ros_moveit_sample"
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge.scripts.og_shortcuts.og_shortcut_menu"
+
+[fswatcher.paths]
+exclude = ["*/rclpy/*", "*/bin", "*/__pycache__/*", "*/.git/*"]
+
+[fswatcher.patterns]
+include = ["*.ogn", "*.py", "*.toml"]
+exclude = ["Ogn*Database.py"]
+
+[[test]]
+
+timeout=900
+dependencies = [
+    "omni.graph.ui",
+    "omni.isaac.wheeled_robots",
+]
+
+args = [
+    "--/exts/omni.isaac.ros2_bridge/publish_without_verification=1",
+    "--/app/gatherRenderResults=false"
+]
+
+stdoutFailPatterns.exclude = [
+    "*[Error] [omni.graph.core.plugin] /ActionGraph/ReadLidarPCL: [/ActionGraph] no prim path found for the lidar*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros2_bridge_ROS2PublishJointState: [/TestGraph] Could not find target prim*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros2_bridge_ROS2PublishImage: [/TestGraph] Width 0 or height 0 is not valid*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros2_bridge_ROS2PublishTransformTree: [/TestGraph] Please specify atleast one target prim for the ROS pose tree component*",
+    "*[Error] [omni.physx.plugin] Setting rigidBodyEnabled to false is not supported if the rigid body is part of an articulation*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros2_bridge_*: [/TestGraph] Unable to create ROS2 node, please check that namespace is valid*",
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+    "*[Error] [omni.isaac.sensor.plugin] *** error, No valid parent for /Hawk/Imu_Sensor with a rigid body api was found, sensor will not be created*",
+    "*[Error] [omni.isaac.sensor.plugin] Failed to create imu sensor, parent prim is not found or invalid*",
+]
+

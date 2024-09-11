@@ -1,0 +1,38 @@
+[core]
+# Load as early as possible
+order = -100
+reloadable = false
+
+[package]
+version = "1.1.3"
+category = "Internal"
+title = "Cloud package Pip Archive"
+description = "General packages for cloud"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "pip"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+
+writeTarget.platform = true # pip prebundle makes this extension os specific
+
+[dependencies]
+"omni.kit.pip_archive" = {} # import the base kit python archive
+
+[[python.module]]
+"filter:platform"."windows-x86_64".path = "pip_prebundle/pywin32_system32"
+
+[[python.module]]
+"filter:platform"."windows-x86_64".path = "pip_prebundle/win32"
+
+[[python.module]]
+"filter:platform"."windows-x86_64".path = "pip_prebundle/win32/lib"
+
+[[python.module]]
+path = "pip_prebundle"
+
+# That is empty module, added here only to make tests discoverable in test run
+[[python.module]]
+name = "omni.pip.cloud"

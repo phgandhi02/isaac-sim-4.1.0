@@ -1,0 +1,53 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.5.0"
+category = "Simulation"
+title = "Isaac Sim Menus"
+description = "Isaac Sim Utility Extensions"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "menu"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.kit.menu.utils" = {}
+"omni.isaac.core" = {}
+"omni.isaac.ui" = {}
+
+[[python.module]]
+name = "omni.isaac.menu"
+
+[[python.module]]
+name = "omni.isaac.menu.tests"
+
+
+[[test]]
+timeout = 1500
+dependencies = [
+    "omni.timeline",
+    "omni.isaac.utils",
+    "omni.isaac.range_sensor",
+    "omni.isaac.sensor",
+    "omni.kit.test_helpers_gfx"
+]
+
+stdoutFailPatterns.exclude = [
+    '*[Error] [omni.isaac.sensor.plugin] *** error, No valid parent*',
+    '*[Error] [omni.isaac.sensor.plugin] Imu Sensor does not exist*',
+    '*[Error] [omni.isaac.sensor.plugin] Contact Sensor does not exist*',
+    '*[omni.isaac.sensor.plugin] Failed to create contact sensor, parent prim is not found or invalid*',
+    '*[Error] [omni.isaac.range_sensor.plugin] Ultrasonic Sensor does not exist*',
+    '*[Error] [omni.isaac.range_sensor.plugin] Lidar Sensor does not exist*',
+    '*[Error] [omni.isaac.range_sensor.plugin] Generic Sensor does not exist*',
+    '*[Error] [omni.kit.commands.command] Failed to execute a command: ChangeProperty*',
+    '*[Error] [asyncio] Task exception was never retrieved*',
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+    '*[Error] [omni.isaac.sensor.plugin] *** error: /Cube/Contact_Sensor parent prim is missing contact report API, automatically adding contact report API, stop and play the simulation for this change to take effect*'
+]

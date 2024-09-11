@@ -1,0 +1,61 @@
+[package]
+title = "Physx Camera"
+description="Provide several camera behaviors that follow animated and simulated objects on the stage."
+repository = ""
+keywords = ["camera"]
+category = "simulation"
+
+version = "106.0.20"
+authors = ["NVIDIA"]
+
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+[dependencies]
+"omni.ui" = {}
+"omni.kit.window.property" = {}
+"omni.physx" = {}
+"omni.kit.property.physx" = {}  # note: to make sure camera property widgets show after physx core widgets
+"omni.physx.demos" = {}
+"omni.kit.viewport.utility" = {}
+"omni.physx.ui" = {}
+"omni.physx.vehicle" = {}
+"omni.physx.tests" = {optional=true}
+
+[[python.module]]
+name = "omni.physxcamera"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+
+[[test]]
+timeout = 1200
+dependencies = [
+   "omni.physx.tests",
+   "omni.kit.renderer.core",
+   "omni.hydra.rtx",
+   "omni.kit.viewport.window",
+]
+args = [
+   "--no-window",
+   "--/app/asyncRendering=false", 
+   "--/app/file/ignoreUnsavedOnExit=true" , 
+   "--/renderer/multiGpu/autoEnable=false",
+   "--/app/profilerBackend=\"\"",
+   "--/rtx/materialDb/syncLoads=true",
+   "--/omni.kit.plugin/syncUsdLoads=true",
+   "--/rtx/hydra/materialSyncLoads=true",
+   "--/app/renderer/resolution/width=64",
+   "--/app/renderer/resolution/height=64",
+   "--/rtx/rendermode=\"rtx\""
+]
+
+waiver = "PhysX tests are running in a separate CI pipeline. Tests are in separate extensions."

@@ -1,0 +1,38 @@
+[core]
+reloadable = false
+# Load at the start, load all schemas with order -100 (with order -1000 the USD libs are loaded)
+order = -100
+
+[package]
+category = "Internal"
+title = "USD ForceField Schema"
+description="USD ForceField Schema"
+toggleable = false
+
+version = "106.0.20"
+authors = ["NVIDIA"]
+
+repository = ""
+
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+[dependencies]
+"omni.usd.libs" = {}
+
+[[python.module]]
+name = "pxr.ForceFieldSchema"
+
+[[python.module]]
+name = "usd.schema.forcefield"
+
+[[native.library]]
+path = "bin/${lib_prefix}forceFieldSchema${lib_ext}"

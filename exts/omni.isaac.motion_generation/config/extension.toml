@@ -1,0 +1,32 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "7.1.0"
+category = "Simulation"
+title = "Isaac Sim Motion Generation"
+description = "Extension that provides support for generating motion with Lula-based motion policies and an interface for writing arbitrary motion policies"
+repository = ""
+authors = ["NVIDIA"]
+keywords = ["isaac", "motion generation", "lula", "motion policy"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+
+[dependencies]
+"omni.isaac.lula" = {}
+"omni.isaac.core" = {}
+
+[[python.module]]
+name = "omni.isaac.motion_generation"
+
+[[python.module]]
+name = "omni.isaac.motion_generation.tests"
+
+[[test]]
+
+dependencies = [
+    "omni.isaac.nucleus" # test only
+]

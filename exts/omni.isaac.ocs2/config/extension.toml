@@ -1,0 +1,35 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.2.1"
+category = "Simulation"
+title = "Isaac Sim: Optimal Control for Switched Systems"
+description = "Extension that provides OCS2 python interface."
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "ocs2", "mpc"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+writeTarget.platform = true # pip prebundle makes this extension os specific
+
+[dependencies]
+"omni.kit.test" = {}
+"omni.kit.pip_archive" = {}
+
+[[python.module]]
+path = "pip_prebundle"
+
+[[python.module]]
+name = "omni.isaac.ocs2"
+
+[[python.module]]
+name = "omni.isaac.ocs2.tests"
+
+
+[[native.library]]
+"filter:platform"."linux-x86_64".path = "pip_prebundle/lib/liboctomap.so"

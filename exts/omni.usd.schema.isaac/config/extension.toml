@@ -1,0 +1,38 @@
+[core]
+reloadable = false
+# Load at the start, load all schemas with order -100 (with order -1000 the USD libs are loaded)
+order = -100
+
+[package]
+version = "2.1.0"
+category = "Simulation"
+authors = ["NVIDIA"]
+repository = ""
+title = "USD Isaac schema"
+description="USD Isaac schema"
+keywords = ["isaac", "usd", "schema"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.usd.libs" = {}
+
+[[python.module]]
+name = "omni.isaac.RangeSensorSchema"
+path = "plugins/RangeSensorSchema/"
+
+[[python.module]]
+name = "omni.isaac.IsaacSensorSchema"
+path = "plugins/IsaacSensorSchema/"
+
+[[python.module]]
+name = "usd.schema.isaac"
+
+[[native.library]]
+path = "plugins/RangeSensorSchema/lib/${lib_prefix}rangeSensorSchema${lib_ext}"
+
+[[native.library]]
+path = "plugins/IsaacSensorSchema/lib/${lib_prefix}isaacSensorSchema${lib_ext}"

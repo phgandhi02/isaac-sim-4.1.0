@@ -1,0 +1,30 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.5.0"
+category = "Simulation"
+title = "Robot Assembler"
+description = "Alpha version of Robot Assembler Extension: Assemble multiple Articulations into a single robot"
+authors = ["NVIDIA"]
+repository = ""
+keywords = []
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+
+[[python.module]]
+name = "omni.isaac.robot_assembler"
+
+[[test]]
+
+dependencies = [
+    "omni.isaac.nucleus" # test only
+]

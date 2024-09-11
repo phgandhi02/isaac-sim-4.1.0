@@ -1,0 +1,88 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.20.1"
+category = "Simulation"
+title = "ROS Bridge"
+description = "ROS Bridge"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "ROS"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.isaac.dynamic_control" = {}
+"omni.isaac.range_sensor" = {}
+"omni.isaac.core" = {}
+"omni.isaac.core_nodes" = {}
+"omni.isaac.sensor" = {}
+"omni.syntheticdata" = {}
+"omni.replicator.core" = {}
+"omni.usd.schema.isaac" = {}
+"omni.graph" = {}
+"omni.graph.tools" = {}
+"usdrt.scenegraph" = {}
+"omni.isaac.nucleus" = {}
+"omni.isaac.ui" = {}
+
+[[python.module]]
+name = "omni.isaac.ros_bridge"
+
+[[python.module]]
+name = "omni.isaac.rospy"
+
+[[python.module]]
+name = "omni.isaac.ros_bridge.tests"
+public = false
+
+#[[python.module]]
+#name = "omni.isaac.ros_bridge.ogn.tests"
+
+[[python.module]]
+name = "omni.isaac.ros_bridge.scripts.samples.ros_samples"
+
+[[python.module]]
+name = "omni.isaac.ros_bridge.scripts.samples.ros_moveit_sample"
+
+[[native.plugin]]
+path = "bin/omni.isaac.ros_bridge.plugin"
+recursive = false
+
+[fswatcher.paths]
+exclude = ["*/noetic*", "*/bin", "*/__pycache__/*", "*/.git/*"]
+
+[fswatcher.patterns]
+include = ["*.ogn", "*.py", "*.toml"]
+exclude = ["Ogn*Database.py"]
+
+[settings]
+exts."omni.isaac.ros_bridge".nodeName = "OmniIsaacRosBridge"
+
+[[test]]
+timeout = 1200
+dependencies = [
+    "omni.graph.ui",
+    "omni.isaac.wheeled_robots",
+]
+
+args = [
+    "--/app/gatherRenderResults=false"
+]
+
+stdoutFailPatterns.exclude = [
+    "*WARNING: cannot load logging configuration file*", # exclude warning as failure
+    "*[Error] [omni.graph.core.plugin] /ActionGraph/PublishTF: [/ActionGraph] Please specify atleast one target prim for the ROS pose tree component*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros_bridge_ROS1PublishJointState: [/TestGraph] Could not find target prim*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros_bridge_ROS1PublishTransformTree: [/TestGraph] Please specify atleast one target prim for the ROS pose tree component*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros_bridge_ROS1PublishImage: [/TestGraph] Width 0 or height 0 is not valid*",
+    "*[Error] [omni.graph.core.plugin] /TestGraph/Template_omni_isaac_ros_bridge_ROS1PublishLaserScan: [/TestGraph] Number of rows must be equal to 1. High LOD not supported for LaserScan, only 2D Lidar Supported for LaserScan. Please disable Lidar High LOD setting*",
+]
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.0.0"

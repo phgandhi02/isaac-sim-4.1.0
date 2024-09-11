@@ -1,0 +1,5 @@
+[privacy]
+performance = "$env{PRIVACY_CONSENT}"
+personalization = "$env{PRIVACY_CONSENT}"
+usage = "$env{PRIVACY_CONSENT}"
+userId = "$env{PRIVACY_USERID}"

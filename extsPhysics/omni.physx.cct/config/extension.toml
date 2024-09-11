@@ -1,0 +1,66 @@
+[package]
+title = "Character Controller"
+description="Avatar movement controller"
+repository = ""
+keywords = ["physics", "physx", "charactercontroller"]
+category = "Simulation"
+authors = ["NVIDIA"]
+
+version = "106.0.20"
+
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+[dependencies]
+"omni.physx" = {}
+"omni.physx.ui" = {}
+"omni.physx.demos" = {}
+"omni.appwindow" = {}
+"omni.kit.viewport.utility" = {}
+"omni.physx.tests" = {optional=true}
+"omni.kit.ui_test" = {}
+"omni.graph" = {}
+"omni.graph.core" = {}
+"omni.graph.tools" = {}
+"omni.usd" = {}
+"omni.kit.commands" = {}
+
+[[python.module]]
+name = "omni.physxcct"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+
+[[test]]
+dependencies = [
+   "omni.hydra.rtx",
+   "omni.kit.viewport.window",
+   "omni.kit.renderer.core",
+   "omni.physx.tests",
+   "omni.kit.mainwindow",
+   "omni.kit.material.library",
+]
+args = [
+   "--/app/asyncRendering=false", 
+   "--/app/file/ignoreUnsavedOnExit=true",
+   "--/renderer/multiGpu/autoEnable=false",
+   "--/app/profilerBackend=\"\"",
+   "--/rtx/materialDb/syncLoads=true",
+   "--/omni.kit.plugin/syncUsdLoads=true",
+   "--/rtx/hydra/materialSyncLoads=true",
+   "--/app/renderer/resolution/width=1280",
+   "--/app/renderer/resolution/height=720",
+   "--/rtx/rendermode=\"rtx\"",
+   "--/app/fastShutdown=1", # OM-61904 (Crash in RTX during shutdown on VP2 code path)
+]
+timeout = 800
+pyCoverageFilter = ["omni.physxcct"]
+waiver = "PhysX tests are running in a separate CI pipeline. Tests are in separate extensions."

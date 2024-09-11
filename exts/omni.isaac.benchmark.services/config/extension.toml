@@ -1,0 +1,38 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.9.0"
+category = "Simulation"
+title = "Benchmark Services"
+description = "This extension provides benchmarking utilities"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "benchmark", "analyze"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.isaac.core" = {}
+"omni.isaac.nucleus" = {}
+"omni.kit.test" = {}
+
+[[python.module]]
+name = "omni.isaac.benchmark.services"
+
+[[python.module]]
+name = "omni.isaac.benchmark.services.tests"
+
+[settings]
+exts."omni.isaac.benchmark.services".metrics.nvdataflow_default_test_suite_name = "Isaac Sim Benchmarks"
+# uncomment and set this to output metrics to a specific folder
+# exts."omni.isaac.benchmark.services".metrics.metrics_output_folder=""
+# Set to true to add a random string to the metrics filename to distinguish runs
+exts."omni.isaac.benchmark.services".metrics.randomize_filename_prefix = false
+
+[[test]]
+dependencies = []

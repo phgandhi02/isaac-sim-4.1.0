@@ -1,0 +1,66 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.18.0"
+category = "Simulation"
+title = "Isaac Sim Tests"
+description = "Collection of tests for isaac sim that are not tied to a specific extension"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "tests"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.physx" = {}
+"omni.physx.commands" = {}
+"omni.timeline" = {} # needed for simulation to happen
+"omni.kit.primitive.mesh" = {} # needed for mesh creation commands
+"omni.isaac.core" = {}
+"omni.kit.material.library" = {}
+"omni.kit.viewport.window" = {} # snippet tests need this
+"omni.kit.pip_archive" = {} # pulls in numpy
+"omni.syntheticdata" = {}
+"omni.isaac.sensor" = {}
+"omni.isaac.range_sensor" = {}
+"omni.kit.asset_converter" = {}
+"omni.isaac.wheeled_robots" = {}
+"omni.isaac.utils" = {}
+"omni.isaac.nucleus" = {}
+
+
+[[python.module]]
+name = "omni.isaac.tests" # so we can find the path to the extension
+
+[[python.module]]
+name = "omni.isaac.tests.tests"
+
+[[test]]
+timeout = 1500
+dependencies = [
+   "omni.kit.window.toolbar",
+   "omni.isaac.core",
+   "omni.isaac.ros2_bridge"
+]
+
+stdoutFailPatterns.exclude = [
+    # This is excluded in at least 3 kit tests.
+    "*Missing call to destroyResourceBindingSignature()*",
+    '*[Error] [omni.isaac.sensor.plugin] *** error, No valid parent*',
+    '*[Error] [omni.isaac.sensor.plugin] Failed to create imu sensor, parent prim is not found or invalid*',
+    '*[Error] [omni.isaac.sensor.plugin] Imu Sensor does not exist*',
+    '*[Error] [omni.isaac.sensor.plugin] Contact Sensor does not exist*',
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+    '*[Error] [omni.isaac.range_sensor.plugin] Ultrasonic Sensor does not exist*',
+    '*[Error] [omni.isaac.range_sensor.plugin] Lidar Sensor does not exist*',
+    '*[Error] [omni.isaac.range_sensor.plugin] Generic Sensor does not exist*',
+    '*[Error] [omni.kit.commands.command] Failed to execute a command: ChangeProperty*',
+    '*[Error] [asyncio] Task exception was never retrieved*',
+
+]

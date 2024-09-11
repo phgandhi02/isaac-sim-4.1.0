@@ -1,0 +1,21 @@
+[package]
+version = "2.8.1"
+category = "Simulation"
+title = "Isaac Sim App Selector"
+description = "Mini Launch Pad app for Isaac Sim Sub Apps"
+authors = ["NVIDIA"]
+readme = "docs/README.md"
+changelog = "docs/CHANGELOG.md"
+preview_image = "icons/preview.png"
+icon = "icons/omni.isaac.sim.png"
+toggleable = false
+
+
+[dependencies]
+"omni.kit.pip_archive" = {} # pulls in pyperclip
+"omni.kit.window.title" = {}
+"omni.kit.uiapp" = {}
+"omni.isaac.version" = {}
+
+[[python.module]]
+name = "omni.isaac.app.selector"

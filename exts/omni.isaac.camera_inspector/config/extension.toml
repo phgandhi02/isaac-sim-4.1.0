@@ -1,0 +1,32 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.2.2"
+category = "Simulation"
+title = "Camera Inspector"
+description = "This extension can inspect and modify the properties of cameras in the scene."
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "camera", "analyze", "inspect", "manager"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.physx" = {}
+"omni.isaac.core" = {}
+"omni.isaac.dynamic_control" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.sensor" = {}
+
+[[python.module]]
+name = "omni.isaac.camera_inspector"
+
+[[test]]
+stdoutFailPatterns.exclude = [
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+]

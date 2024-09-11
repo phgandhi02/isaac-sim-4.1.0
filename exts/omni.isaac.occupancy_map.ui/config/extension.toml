@@ -1,0 +1,25 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.1.0"
+category = "Simulation"
+title = "UI components for the Isaac Sim Occupancy Map"
+description = "2D Occupancy Map Generation"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "occupancy map"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+"omni.isaac.occupancy_map" = {}
+
+[[python.module]]
+name = "omni.isaac.occupancy_map.ui"

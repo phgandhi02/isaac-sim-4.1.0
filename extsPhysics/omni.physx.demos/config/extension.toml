@@ -1,0 +1,72 @@
+[package]
+category = "simulation"
+authors = ["NVIDIA"]
+title = "PhysX Demos"
+description="Physics demos"
+repository = ""
+keywords = ["physics", "physx", "samples", "demos"]
+
+version = "106.0.20"
+
+icon = "icons/icon.png"
+preview_image = "icons/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+
+[dependencies]
+"omni.usd" = {}
+"usdrt.scenegraph" = {}
+"omni.ui" = {}
+"omni.physx" = {}
+"omni.physx.ui" = {}
+"omni.debugdraw" = {}
+"omni.kit.stage_templates" = {}
+"omni.kit.window.file" = {}
+"omni.kit.widget.text_editor" = {}
+"omni.kit.viewport.utility" = {}
+"omni.kit.primitive.mesh" = {}
+"omni.kit.material.library" = {optional=true}  # to get CreateAndBindMdlMaterialFromLibrary, optional to prevent loading iray in stubgen phase ...
+"omni.physx.tests" = {optional=true}
+"omni.physx.tests.visual" = {optional=true}
+
+[settings]
+# physics demo asset path setting: if not overriden from command line or kit file it will get set when demo ext is started 
+# up to either nucleus or S3 path (based on the setting below) and a current kitsdk version is appended
+physics.demoAssetsPath = ""
+# switch demo assets server, false (default) is public S3, true is internal nucleus
+physics.demoDevelopmentMode = false
+
+[[python.module]]
+name = "omni.physxdemos"
+
+[[test]]
+dependencies = [
+    "omni.physx.tests",
+    "omni.physx.tests.visual",
+    "omni.hydra.rtx",
+    "omni.kit.viewport.window",
+    "omni.assets.plugins",
+    "omni.kit.renderer.core",
+    "omni.kit.primitive.mesh",
+    "omni.kit.renderer.capture",
+    "omni.kit.material.library",
+]
+args = [
+    "--/app/asyncRendering=false",
+    "--/rtx/materialDb/syncLoads=true",
+    "--/app/file/ignoreUnsavedOnExit=true",
+    "--no-window"
+]
+stdoutFailPatterns.exclude = [
+    "*Failed to read texture cache file*",
+]
+
+timeout = 3600  # ran into timeouts on Linux with rtx pipeline taking long to start, also publishing artifacts is now slow
+waiver = "PhysX tests are running in a separate CI pipeline. Tests are in separate extensions."

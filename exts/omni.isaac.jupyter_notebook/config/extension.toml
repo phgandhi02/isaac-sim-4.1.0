@@ -1,0 +1,42 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.1.0"
+category = "Utility"
+title = "Jupyter notebook integration"
+description = "Jupyter notebook version of Omniverse's script editor"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "python", "jupyter", "notebook"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.kit.uiapp" = { optional = true }
+"omni.kit.notification_manager" = { optional = true }
+
+[[python.module]]
+name = "omni.isaac.jupyter_notebook"
+
+[python.pipapi]
+requirements = ["jupyterlab", "notebook", "nbclassic", "chardet", "python-language-server", "jedi"]
+use_online_index = true
+ignore_import_check = true
+
+[settings]
+exts."omni.isaac.jupyter_notebook".host = "0.0.0.0"
+exts."omni.isaac.jupyter_notebook".port = 8227
+exts."omni.isaac.jupyter_notebook".kill_processes_with_port_in_use = false
+# jupyter notebook settings
+exts."omni.isaac.jupyter_notebook".classic_notebook_interface = false
+exts."omni.isaac.jupyter_notebook".notebook_ip = "0.0.0.0"
+exts."omni.isaac.jupyter_notebook".notebook_port = 8228
+exts."omni.isaac.jupyter_notebook".notebook_token = ""
+exts."omni.isaac.jupyter_notebook".notebook_dir = ""
+# jupyter notebook's command line options other than: '--ip', '--port', '--token', '--notebook-dir'
+exts."omni.isaac.jupyter_notebook".command_line_options = "--allow-root --no-browser --JupyterApp.answer_yes=True"

@@ -1,0 +1,72 @@
+[package]
+title = "PhysX Graph"
+category = "Graph"
+repository = ""
+description="PhysX OmniGraph nodes for Action Graph."
+keywords = ["physics", "physx", "omnigraph", "action"]
+authors = ["NVIDIA"]
+
+version = "106.0.20"
+
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+## Main module for the Python interface
+[[python.module]]
+name = "omni.physxgraph"
+
+# Watch the .ogn files for hot reloading (only works for Python files)
+[fswatcher.patterns]
+include = ["*.ogn", "*.py"]
+exclude = ["Ogn*Database.py"]
+
+# Other extensions that need to load before this one
+[dependencies]
+"omni.physx" = {}
+"omni.physx.demos" = {}
+"omni.graph" = {}
+"omni.graph.core" = {}
+"omni.graph.tools" = {}
+
+[[test]]
+dependencies = [  
+   "omni.hydra.rtx",
+   "omni.kit.viewport.window",
+   "omni.assets.plugins",
+   "omni.kit.renderer.core",
+   "omni.kit.primitive.mesh",
+   "omni.kit.renderer.capture",
+   "omni.assets.plugins",
+   "omni.kit.renderer.core",
+   "omni.physx.demos",
+   "omni.physx.tests.visual",
+   "omni.graph.nodes",
+   "omni.graph.action",
+]
+stdoutFailPatterns.exclude = [
+    # Exclude messages which say they should be ignored
+    "*Ignore this error/warning*",
+]
+args = [
+    "--/app/window/width=1280",
+    "--/app/window/height=1024",
+    "--/app/asyncRendering=false",
+    "--no-window",
+    "--/renderer/multiGpu/autoEnable=false",
+    "--/renderer/multiGpu/enabled=false",
+    "--/renderer/debug/validation/enabled=false",
+    # Setting this makes the ImmediateComplexDepenetrationDemo test fail.
+    # "--/omni.kit.plugin/syncUsdLoads=true",
+]
+timeout = 600
+
+[[native.plugin]]
+path = "bin/*.plugin"

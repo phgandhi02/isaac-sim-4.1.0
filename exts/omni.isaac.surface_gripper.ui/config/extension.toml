@@ -1,0 +1,24 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.0.0"
+category = "Simulation"
+title = "Isaac Sim Surface Gripper UI Components"
+description = "UI components for the Surface Gripper extension"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "physics", "end-effector","ui"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.isaac.ui" = {}
+"omni.isaac.surface_gripper" = {}
+
+[[python.module]]
+name = "omni.isaac.surface_gripper.ui"

@@ -1,0 +1,33 @@
+display_name = "Isaac Quadruped Robot"
+
+[package]
+version = "1.4.5"
+category = "Simulation"
+title = "Isaac Quadruped Robot"
+description = "Simulation for unitree 12 dof quadrupeds"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "robot", "quadruped"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+
+[dependencies]
+"omni.isaac.core" = {}
+"omni.isaac.sensor" = {}
+"omni.isaac.core_nodes" = {}
+"omni.isaac.nucleus" = {}
+
+[[python.module]]
+name = "omni.isaac.quadruped"
+
+[[python.module]]
+name = "omni.isaac.quadruped.tests"
+public = false
+
+[[test]]
+timeout = 1200
+stdoutFailPatterns.exclude = [
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+]

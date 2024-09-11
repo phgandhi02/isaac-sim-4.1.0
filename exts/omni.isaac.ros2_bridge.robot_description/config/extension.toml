@@ -1,0 +1,35 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.1.0"
+category = "Simulation"
+title = "Ros2 Robot Description URDF Importer"
+description = "This extensions expands the URDF Importer by enabling importing the robot description from a given ROS node"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "ROS2", "URDF"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.kit.pip_archive" = {} # import the base kit python archive
+"omni.kit.viewport.utility"= {}
+"omni.kit.viewport.window"= {}
+"omni.isaac.ros2_bridge" = {}
+"omni.importer.urdf" = {}
+"omni.ui" = {}
+
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge.robot_description"
+
+[[test]]
+stdoutFailPatterns.exclude = [
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+]
+

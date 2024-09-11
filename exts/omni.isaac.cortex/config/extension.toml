@@ -1,0 +1,34 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.3.8"
+category = "Robotics"
+title = "Omni Isaac Cortex"
+description = "Decision framework and organizational structures for using Omni Isaac Sim as the mind of a physical robot."
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "robotics", "collaborative robotics", "digital twins"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.0.0. Future versions will be indepedent from Isaac Sim"
+
+[dependencies]
+"omni.isaac.core" = {}
+"omni.isaac.franka" = {}
+"omni.isaac.motion_generation" = {}
+"omni.isaac.nucleus" = {}
+
+[[python.module]]
+name = "omni.isaac.cortex"
+
+[[test]]
+stdoutFailPatterns.exclude = [
+    "*WARNING: cannot load logging configuration file*", # exclude warning as failure
+]

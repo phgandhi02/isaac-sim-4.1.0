@@ -1,0 +1,44 @@
+[package]
+title = "PhysX Internal"
+description="Experimental physics still under development."
+changelog="docs/CHANGELOG.md"
+repository = ""
+keywords = ["physics", "physx"]
+category = "simulation"
+
+
+[dependencies]
+"omni.physx.ui" = {}
+"omni.kit.window.property" = {}
+"omni.graph.core" = {}
+"omni.kit.usd_undo" = {}
+"omni.kit.property.bundle" = {}
+"omni.usdphysics.tests" = {}
+"omni.physx.tests" = {}
+"omni.physx.demos" = {}
+"omni.physx.commands" = {}
+"omni.physx.cct" = {}
+"omni.kit.property.physx" = {}
+"omni.ui" = {}
+"omni.kit.viewport.utility" = {}
+
+[[python.module]]
+name = "omni.physxinternal"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+
+[[test]]
+dependencies = [
+   "omni.kit.renderer.core",
+   "omni.hydra.rtx",
+   "omni.kit.viewport.window",
+   "omni.kit.primitive.mesh",
+]
+args = [
+   "--/app/asyncRendering=false",
+   "--/app/file/ignoreUnsavedOnExit=true",
+   "--no-window",
+]
+timeout = 300
+pyCoverageFilter = ["omni.physxinternal", "omni.physx"]

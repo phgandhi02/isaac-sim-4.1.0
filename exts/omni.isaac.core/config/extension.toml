@@ -1,0 +1,61 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "3.18.1"
+category = "Simulation"
+title = "Isaac Sim Core"
+description = "Core"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.isaac.core_archive" = {}
+"omni.isaac.ml_archive" = {}
+"omni.isaac.nucleus" = {}
+"omni.pip.compute" = {} # scipy
+"omni.pip.cloud" = {}
+"omni.physx.tensors" = {}
+"omni.kit.usd.layers" = {}
+"omni.kit.material.library" = {optional = true} # OmniGlass
+"omni.isaac.version" = {}
+"omni.warp.core" = {}
+"omni.physx.stageupdate" = {}
+"omni.usd.schema.semantics" = {}
+
+
+[[python.module]]
+name = "omni.isaac.core"
+
+[[python.module]]
+name = "omni.isaac.core.tests"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+recursive = false
+
+[[test]]
+timeout = 12000
+dependencies = [
+    "omni.hydra.rtx",                       # "omni.hydra.pxr", Can we run and pass with Storm ?
+    "omni.kit.viewport.utility",
+    "omni.kit.viewport.window",
+    "omni.kit.primitive.mesh",
+    "omni.kit.material.library",
+    "omni.warp",
+    "omni.isaac.sensor",
+    "omni.isaac.nucleus",
+    "omni.isaac.cloner",
+]
+
+stdoutFailPatterns.exclude = [
+    "*Invalid articulation pointer for*", # Per node tests won't have valid bundles
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+]

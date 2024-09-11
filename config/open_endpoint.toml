@@ -1,0 +1,8 @@
+[structuredLog]
+privacySettingsFile = "${app}/../config/privacy.toml"
+
+[structuredLog.extraFields]
+schemaid = "omniverse-team.open.omni-open-schema2:1"
+
+[telemetry]
+useOpenEndpoint = true

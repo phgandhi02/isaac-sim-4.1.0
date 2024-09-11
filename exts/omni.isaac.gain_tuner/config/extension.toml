@@ -1,0 +1,25 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "1.1.2"
+category = "Simulation"
+title = "Gain Tuner"
+description = "Gain Tuner for Articulation PD Gains"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "physics", "analyze", "tune"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+
+[[python.module]]
+name = "omni.isaac.gain_tuner"

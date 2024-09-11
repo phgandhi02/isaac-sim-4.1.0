@@ -1,0 +1,75 @@
+[package]
+title = "Zero Gravity"
+description ="User-guided physically accurate placement of geometry in a USD stage."
+authors = ["NVIDIA"]
+keywords = ["physics", "physx", "placement", "editing", "zero", "gravity"]
+category = "simulation"
+icon = "icons/icon.png"
+preview_image = "icons/preview_image.png"
+
+version = "106.0.20"
+
+
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+
+[[python.module]]
+name = "omni.physxzerogravity"
+
+[dependencies]
+"omni.physx" = {}
+"omni.kit.menu.utils" = {}
+"omni.kit.window.toolbar" = {}
+"omni.kit.widget.stage" = {}
+"omni.ui" = {}
+"omni.debugdraw" = {}
+"omni.kit.viewport.utility" = {}
+"omni.kit.commands" = {}
+"omni.kit.notification_manager" = {}
+"omni.kit.manipulator.prim" = {}
+"omni.kit.manipulator.selector" = {}
+"omni.kit.manipulator.selection" = {}
+"omni.kit.viewport.window" = {}
+"usdrt.scenegraph" = {}
+
+[[native.plugin]]
+path = "bin/*.plugin"
+
+[settings]
+persistent.exts."omni.kit.manipulator.selector".orders."omni.physxzerogravity" = -9  # Add a setting to define the priority of this manipulator
+
+[[test]]
+dependencies = [
+   "omni.physx.tests",
+   "omni.kit.renderer.core",
+   "omni.kit.viewport.window",
+   "omni.assets.plugins",
+   "omni.kit.renderer.core",
+   "omni.usd.libs",
+   "omni.usd",
+   "omni.kit.ui_test"
+]
+args = [
+    "--no-window",
+    "--/app/asyncRendering=false",
+    "--/app/file/ignoreUnsavedOnExit=true",
+    "--/renderer/multiGpu/autoEnable=false",
+    "--/app/profilerBackend=\"\"",
+    "--/rtx/materialDb/syncLoads=true",
+    "--/omni.kit.plugin/syncUsdLoads=true",
+    "--/rtx/hydra/materialSyncLoads=true",
+    "--/app/renderer/resolution/width=64",
+    "--/app/renderer/resolution/height=64",
+    "--/rtx/rendermode=\"rtx\""
+]
+timeout = 1200
+pyCoverageThreshold = 0
+waiver = "PhysX tests are running in a separate CI pipeline. Tests are in separate extensions."

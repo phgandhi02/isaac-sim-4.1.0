@@ -1,0 +1,45 @@
+[package]
+title = "Physics UI"
+description="Adds GUI elements for physics authoring."
+repository = ""
+keywords = ["physics", "ui"]
+category = "simulation"
+authors = ["NVIDIA"]
+
+version = "106.0.20"
+
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+[dependencies]
+"omni.usdphysics" = {}
+"omni.debugdraw" = {}
+"omni.ui" = {}
+"usdrt.scenegraph" = {}
+"omni.ui.scene" = {}
+"omni.kit.viewport.utility" = { }
+"omni.kit.commands" = {}
+"omni.kit.viewport.menubar.display" = { optional = true } # VP2 only, do not make it required or Kit L1 tests will fail
+
+[[python.module]]
+path = "."
+
+[[python.module]]
+name = "omni.usdphysicsui"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+
+[[test]]
+dependencies = [
+]
+waiver = "Physics tests are running in a separate CI pipeline. Tests are in separate extensions."

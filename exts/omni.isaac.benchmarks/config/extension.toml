@@ -1,0 +1,56 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.23.0"
+category = "Simulation"
+title = "Benchmark"
+description = "This extension provides benchmarking utilities"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "benchmark", "analyze"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.isaac.benchmark.services" = {}
+"omni.physx" = {}
+"omni.isaac.core" = {}
+"omni.isaac.core_nodes" = {}
+"omni.graph" = {}
+"omni.graph.tools" = {}
+"omni.graph.ui" = {}
+"omni.isaac.core_archive" = {} # pulls in nvsmi
+"omni.isaac.range_sensor" = {}
+"omni.isaac.sensor" = {}
+"omni.isaac.wheeled_robots" = {}
+"omni.hydra.rtx"= {}
+"omni.kit.viewport.utility"= {}
+"omni.kit.viewport.window"= {}
+"omni.kit.primitive.mesh"= {}
+"omni.kit.material.library"= {}
+
+[[python.module]]
+name = "omni.isaac.benchmarks.tests"
+
+[settings]
+# uncomment and set this to output metrics to a specific folder
+# exts."omni.isaac.benchmark.services".metrics.metrics_output_folder=""
+
+[[test]]
+# these are not cached
+dependencies = [
+    "omni.isaac.nucleus" # test only
+]
+
+timeout=12000
+args = ["--no-window", "--allow-root", "--/app/fastShutdown=1", "--vulkan"] # we can use fast shutdown because metrics are not uploaded
+stdoutFailPatterns.exclude = [
+    "*NGX EvaluateFeature failed*", # Ada multi gpu doesn't support this yet
+    "*Failed to evaluate DLSS feature*", # Ada multi gpu doesn't support this yet
+    '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+]

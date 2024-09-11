@@ -1,0 +1,55 @@
+[package]
+title = "Blockworld"
+description="Blockworld"
+repository = ""
+keywords = ["physics", "physx", "blockworld"]
+category = "simulation"
+
+version = "106.0.20"
+authors = ["NVIDIA"]
+
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+changelog="docs/CHANGELOG.md"
+readme  = "docs/README.md"
+support_level = "Example"
+
+[package.writeTarget]
+kit = true
+python = true
+usd = true
+
+[dependencies]
+"omni.usd" = {}
+"omni.physx" = {}
+"omni.physx.cct" = {}
+"omni.physx.demos" = {}
+"omni.physx.tests" = {optional=true}
+"omni.physx.tests.visual" = {optional=true}
+
+[[python.module]]
+name = "omni.blockworld"
+
+[[test]]
+dependencies = [
+   "omni.hydra.rtx",
+   "omni.kit.viewport.window",
+   "omni.assets.plugins",
+   "omni.kit.renderer.core",
+   "omni.kit.primitive.mesh",
+   "omni.physx.tests",
+   "omni.physx.tests.visual",
+]
+args = [
+    "--/app/asyncRendering=false",
+    "--no-window",
+    "--/renderer/multiGpu/autoEnable=false",
+    "--/renderer/multiGpu/enabled=false",
+    "--/renderer/debug/validation/enabled=false",
+    "--/omni.kit.plugin/syncUsdLoads=true",
+]
+stdoutFailPatterns.exclude = [
+    "*unsubscribeToActionEvents*", # ETM 106 fail fix, unsubscribeToActionEvents errors after tests succeed, cannot locally repro
+]
+timeout = 1200  # make this a lot over the base limit to see if we can catch the reason of the overtimes
+waiver = "PhysX tests are running in a separate CI pipeline. Tests are in separate extensions."

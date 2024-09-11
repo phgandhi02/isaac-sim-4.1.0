@@ -1,0 +1,35 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.3.0"
+category = "Simulation"
+title = "Isaac USD to URDF exporter"
+description = "Extension that exports USD files to URDF"
+authors = ["NVIDIA"]
+repository = ""
+keywords = ["isaac", "URDF"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+writeTarget.kit = true
+writeTarget.platform = true # pip prebundle makes this extension os specific
+
+[dependencies]
+"omni.kit.test" = {}
+"omni.kit.pip_archive" = {}
+"omni.kit.commands" = {}
+"omni.physx" = {}
+"omni.timeline" = {}
+"omni.isaac.ui" = {}
+
+[[python.module]]
+path = "pip_prebundle"
+
+[[python.module]]
+name = "omni.exporter.urdf"
+
+[[python.module]]
+name = "omni.exporter.urdf.tests"
