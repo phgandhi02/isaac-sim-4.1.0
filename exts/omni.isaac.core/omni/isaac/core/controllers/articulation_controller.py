@@ -13,10 +13,17 @@ from omni.isaac.core.utils.types import ArticulationAction, ArticulationActions
 
 
 class ArticulationController(object):
-    """PD Controller of all degrees of freedom of an articulation, can apply position targets, velocity targets and efforts.
+    """_summary_
 
-    Checkout the required tutorials at
-     https://docs.omniverse.nvidia.com/app_isaacsim/app_isaacsim/overview.html
+    PD Controller of all degrees of freedom of an articulation, can apply position targets, velocity targets and efforts.
+
+    Checkout the required tutorials at https://docs.omniverse.nvidia.com/app_isaacsim/app_isaacsim/overview.html
+
+    Args:
+        object (_type_): _description_
+
+    Returns:
+        _type_: _description_
     """
 
     def __init__(self) -> None:
