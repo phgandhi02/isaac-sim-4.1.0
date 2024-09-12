@@ -58,6 +58,7 @@ class GridCloner(Cloner):
         
         if num_clones is None:
             num_clones = len(self._positions)
+            self.num_clones = num_clones
         
         # check if inputs are valid
         if position_offsets is not None:
@@ -186,4 +187,7 @@ class GridCloner(Cloner):
 
     @property
     def num_clones(self):
-        return len(self.positions)
+        if len(self._positions):
+            return len(self._positions)
+        else:
+            return None
