@@ -5,3 +5,4 @@ will let everyone else have access to it as well.
 
 To have an extension run at startup you add it to the [kit file](../apps/omni.isaac.sim.base.kit) which is the config 
 for when isaac launches from the [startup file](../isaac-sim.sh). 
+

@@ -1,0 +1,40 @@
+[package]
+title = "Isaac Sim"
+description = "Main Omniverse Isaac Sim Application"
+version = "4.1.0"
+execFile = "isaac-sim"
+
+# That makes it browsable in UI with "experience" filter
+keywords = ["experience", "app", "usd"]
+
+[dependencies]
+"omni.isaac.sim.base" = {}
+# "omni.kit.splash" = { order = -5000}
+
+[settings]
+app.name = "Isaac-Sim"
+app.version = "4.1.0"
+app.fastShutdown = true
+foundation.verifyOsVersion.enabled = false
+
+[settings.app.exts]
+folders = ["${app}/../exts", "${app}/../extscache", "${app}/../extsPhysics", "${app}/../extsUser"]
+
+# [settings.app.window]
+# drawMouse = true
+
+# Splash Setup
+# TODO105 use omni.kit.carousel instead
+################################
+# exts."omni.kit.window.splash".imagePath = "${app}/../exts/omni.isaac.splash/data/isaac_splash_screen_daily@1x.png"
+# exts.'omni.kit.splash'.splash_app = "${app}/omni.isaac.sim.splash.kit"
+
+[settings.exts."omni.kit.registry.nucleus"]
+registries = [
+    { name = "kit/default", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/shared" },
+    { name = "kit/sdk", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/sdk/${kit_version_short}/${kit_git_hash}" },
+    { name = "kit/community", url = "https://dw290v42wisod.cloudfront.net/exts/kit/community" }
+]
+
+[settings.exts."omni.kit.window.content_browser"]
+enable_thumbnail_generation_images = false # temp fix to avoid leaking python processes

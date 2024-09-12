@@ -9,7 +9,6 @@
 /dev
 /docs
 /data
-/apps
 /tests
 /python_packages
 /exts/omni.exporter.urdf/pip_prebundle
@@ -34,7 +33,6 @@ VERSION
 *.sh
 *.cmd
 *.ps1
-*.kit
 *.bat
 *.dll
 *.svg

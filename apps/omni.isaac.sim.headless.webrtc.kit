@@ -1,0 +1,46 @@
+[package]
+title = "Isaac Sim (Headless WebRTC)"
+description = "Headless Isaac Sim with Livestream using WebRTC"
+version = "4.1.0"
+execFile = "isaac-sim.headless.webrtc"
+
+# That makes it browsable in UI with "experience" filter
+keywords = ["experience", "app", "usd"]
+
+[dependencies]
+"omni.isaac.sim.base" = {}
+"omni.services.streamclient.webrtc" = {version = "1.3.8", exact = true}
+# "omni.kit.livestream.core" = {}
+# "omni.kit.livestream.webrtc" = {}
+# "omni.kit.streamsdk.plugins" = {}
+
+[settings]
+app.name = "Isaac-Sim"
+app.version = "4.1.0"
+app.fastShutdown = true
+
+[settings.app.exts]
+folders = ["${app}/../exts", "${app}/../extscache", "${app}/../extsPhysics", "${app}/../extsUser"]
+
+[settings.app.livestream]
+# proto = "ws"
+# allowResize = true
+outDirectory = "${data}"
+
+[settings.app.window]
+title = "Isaac Sim Headless WebRTC"
+hideUi = false
+
+# width = 1700
+# height = 900
+drawMouse = true
+
+[settings.ngx]
+enabled = false
+
+[settings.exts."omni.kit.registry.nucleus"]
+registries = [
+    { name = "kit/default", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/shared" },
+    { name = "kit/sdk", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/sdk/${kit_version_short}/${kit_git_hash}" },
+    { name = "kit/community", url = "https://dw290v42wisod.cloudfront.net/exts/kit/community" }
+]

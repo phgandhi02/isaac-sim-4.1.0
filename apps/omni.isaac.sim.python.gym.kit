@@ -1,0 +1,54 @@
+[package]
+title = "Isaac Sim Python - Gym"
+description = "A simplifed app for running Gym examples with rendering"
+version = "4.1.0"
+
+# That makes it browsable in UI with "experience" filter
+keywords = ["experience", "app", "usd"]
+
+[deprecation]
+warning = "App file deprecated since Isaac Sim 4.0.0. Replaced by IsaacLab."
+
+[dependencies]
+"omni.isaac.sim.python.gym.headless" = {}
+
+# PhysX
+"omni.kit.property.physx" = {}
+"omni.kit.property.bundle" = {}
+
+"omni.kit.material.library" = {}
+"omni.kit.viewport.rtx" = {}
+"omni.kit.viewport.window" = {}
+
+"omni.kit.window.file" = {}
+"omni.kit.window.script_editor" = {}
+"omni.kit.window.status_bar" = {}
+"omni.kit.window.title" = {}
+"omni.kit.window.extensions" = {}
+"omni.kit.window.toolbar" = {}
+"omni.kit.window.stage" = {}
+
+"omni.kit.menu.utils" = {}
+"omni.kit.menu.file" = {}
+"omni.kit.menu.edit" = {}
+"omni.kit.menu.create" = {}
+"omni.kit.menu.stage" = {}
+
+[settings]
+# set the default ros bridge to disable on startup
+isaac.startup.ros_bridge_extension = ""
+
+[settings.exts."omni.kit.registry.nucleus"]
+registries = [
+    { name = "kit/default", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/shared" },
+    { name = "kit/sdk", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/sdk/${kit_version_short}/${kit_git_hash}" },
+    { name = "kit/community", url = "https://dw290v42wisod.cloudfront.net/exts/kit/community" }
+]
+
+[settings.app.exts]
+folders = ["${app}/../exts", "${app}/../extscache", "${app}/../extsPhysics", "${app}/../extsUser", "${app}/../kit/exts"]
+
+# Isaac Sim Extensions
+###############################
+[dependencies]
+"omni.isaac.app.setup" = { order = 1000 } # we are running that at the end
