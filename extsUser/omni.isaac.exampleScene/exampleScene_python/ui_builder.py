@@ -11,10 +11,9 @@ import numpy as np
 import omni.timeline
 import omni.ui as ui
 from omni.isaac.core.articulations import Articulation, ArticulationGripper
-from omni.isaac.core.controllers import ArticulationController
-from omni.isaac.core.robots import Robot
-from omni.isaac.core.objects.cuboid import FixedCuboid
+from omni.isaac.core.robots import Robot, RobotView
 from omni.isaac.core.prims import XFormPrim
+from omni.isaac.cloner import GridCloner
 from omni.isaac.core.utils.prims import is_prim_path_valid
 from omni.isaac.core.utils.stage import add_reference_to_stage, create_new_stage, get_current_stage
 from omni.isaac.core.world import World
@@ -161,48 +160,13 @@ class UIBuilder:
         they may perform a check here to see if their desired assets are already on the stage,
         and avoid loading anything if they are.  In this case, the user would still need to add
         their assets to the World (which has low overhead).  See commented code section in this function.
-        
-        Args:
-            
-        Returns:
-            
-        Raises:
-            
-
-        
         """
-        # # Load the UR10e
-        # robot_prim_path = "/ur10e"
-        # path_to_robot_usd = get_assets_root_path() + "/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd"
-
-        # # Do not reload assets when hot reloading.  This should only be done while extension is under development.
-        # # if not is_prim_path_valid(robot_prim_path):
-        # #     create_new_stage()
-        # #     add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-        # # else:
-        # #     print("Robot already on Stage")
-
-        # create_new_stage()
-        # self._add_light_to_stage()
-        # add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-
-        # # Create a cuboid
-        # self._cuboid = FixedCuboid(
-        #     "/Scenario/cuboid", position=np.array([0.3, 0.3, 0.5]), size=0.05, color=np.array([255, 0, 0])
-        # )
-
-        # self._articulation = Articulation(robot_prim_path)
-
-        # # Add user-loaded objects to the World
-        # world = World.instance()
-        # world.scene.add(self._articulation)
-        # world.scene.add(self._cuboid)
-
         # Load the UR10e
+        base_env_path = "/World/robots"
         robot_position = np.array([-3,1,0])
         robot_orientation = np.array([0,0,0,1])
         robot_scale = np.ones(3)
-        robot_prim_path = "/World/ur10e"
+        robot_prim_path = "/World/robots/ur10e"
         robot_joint_names = ["shoulder_lift_joint", "shoulder_pan_joint", "elbow_joint", "wrist_1_joint",
                              "wrist_2_joint", "wrist_3_joint", "ee_joint"]
         path_to_robot_usd = get_assets_root_path() + "/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd"
@@ -221,13 +185,31 @@ class UIBuilder:
         self._add_light_to_stage()
         world.scene.add_default_ground_plane()
         add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-        
-        world.scene.add(Robot(prim_path=robot_prim_path,
+        world.scene.add(Robot(robot_prim_path,
+                              name="ur10",
                               position=robot_position,
-                              orientation= robot_orientation,
+                              orientation=robot_orientation,
                               scale=robot_scale,
                               visible=True
                               )
+                        )
+        
+        cloner = GridCloner(2,num_per_row=1,stage=world.stage)
+        cloner.define_base_env(base_env_path=base_env_path)
+        robot_prim_paths = cloner.generate_paths(robot_prim_path,8)
+        
+        robot_positions, robot_orientations = cloner.clone(source_prim_path=robot_prim_path,
+                                                            prim_paths=robot_prim_paths,
+                                                            replicate_physics=True,
+                                                            base_env_path=base_env_path,
+                                                            copy_from_source=True
+                                                        )
+        
+        print(robot_positions)
+        
+        world.scene.add(RobotView(prim_paths_expr="/World/robots/*",
+                                  name="ur10_robot_view"
+                                  )
                         )
         
         add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
@@ -242,6 +224,9 @@ class UIBuilder:
                                   translation=np.array([-2.6,0,0.25])
                                   )
                         )
+        print('ext started')
+        
+        
         
 
     def _setup_scenario(self):
