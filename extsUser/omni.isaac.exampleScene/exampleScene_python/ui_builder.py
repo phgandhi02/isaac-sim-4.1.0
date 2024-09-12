@@ -199,7 +199,7 @@ class UIBuilder:
         # world.scene.add(self._cuboid)
 
         # Load the UR10e
-        robot_position = np.array([0,0,0])
+        robot_position = np.array([-3,1,0])
         robot_orientation = np.array([0,0,0,1])
         robot_scale = np.ones(3)
         robot_prim_path = "/World/ur10e"
@@ -209,6 +209,7 @@ class UIBuilder:
         
         path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/conveyor.usd"
         conveyor_prim_path = "/World/conveyor"
+        conveyor_scale = np.array([1,1,.1])
         
         path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/teeth_retainer.usd"
         teeth_prim_path = "/World/teeth"
@@ -231,6 +232,16 @@ class UIBuilder:
         
         add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
         add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
+        
+        world.scene.add(XFormPrim(prim_path=conveyor_prim_path,
+                              scale=conveyor_scale,
+                              visible=True
+                              )
+                        )
+        world.scene.add(XFormPrim(prim_path=teeth_prim_path,
+                                  translation=np.array([-2.6,0,0.25])
+                                  )
+                        )
         
 
     def _setup_scenario(self):
