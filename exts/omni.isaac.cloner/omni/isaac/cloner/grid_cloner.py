@@ -16,8 +16,10 @@ from pxr import Gf, Usd, UsdGeom
 
 
 class GridCloner(Cloner):
-
-    """This is a specialized Cloner class that will automatically generate clones in a grid fashion."""
+    """
+    This is a specialized Cloner class that will automatically generate clones in a grid fashion. In order to clone the 
+    objects, use the clone method.
+    """
 
     def __init__(self, spacing: float, num_per_row: int = -1, stage: Usd.Stage = None):
         """
@@ -169,5 +171,19 @@ class GridCloner(Cloner):
             root_path=root_path,
             copy_from_source=copy_from_source,
         )
+        
+        self._positions = np.array(positions)
+        self._orientations = np.array(orientations)
+        return positions,orientations
+    
+    @property
+    def positions(self):
+        return self._positions
+        
+    @property
+    def orientations(self):
+        return self._orientations
 
-        return positions
+    @property
+    def num_clones(self):
+        return len(self.positions)
