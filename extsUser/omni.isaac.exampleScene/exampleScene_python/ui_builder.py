@@ -104,7 +104,9 @@ class UIBuilder:
                 self._load_btn = LoadButton(
                     "Load Button", "LOAD", setup_scene_fn=self._setup_scene, setup_post_load_fn=self._setup_scenario
                 )
-                self._load_btn.set_world_settings(physics_dt=1 / 60.0, rendering_dt=1 / 60.0)
+                self._load_btn.set_world_settings(physics_dt=1 / 60.0, rendering_dt=1 / 60.0, 
+                                                  backend="torch", device= "cuda")
+                
                 self.wrapped_ui_elements.append(self._load_btn)
 
                 self._reset_btn = ResetButton(
@@ -163,8 +165,8 @@ class UIBuilder:
         """
         # Load the UR10e
         base_env_path = "/World/robots"
-        robot_position = np.array([-3,1,0])
-        robot_orientation = np.array([0,0,0,1])
+        robot_offset = np.array([-3,1,0])
+        robot_orientation = np.array([1,0,0,0])
         robot_scale = np.ones(3)
         robot_prim_path = "/World/robots/ur10e"
         robot_joint_names = ["shoulder_lift_joint", "shoulder_pan_joint", "elbow_joint", "wrist_1_joint",
@@ -187,7 +189,7 @@ class UIBuilder:
         add_reference_to_stage(path_to_robot_usd, robot_prim_path)
         world.scene.add(Robot(robot_prim_path,
                               name="ur10",
-                              position=robot_position,
+                              position=robot_offset,
                               orientation=robot_orientation,
                               scale=robot_scale,
                               visible=True
@@ -200,6 +202,7 @@ class UIBuilder:
         
         robot_positions, robot_orientations = cloner.clone(source_prim_path=robot_prim_path,
                                                             prim_paths=robot_prim_paths,
+                                                            position_offsets=np.repeat(robot_offset,len(robot_prim_paths),1),
                                                             replicate_physics=True,
                                                             base_env_path=base_env_path,
                                                             copy_from_source=True
