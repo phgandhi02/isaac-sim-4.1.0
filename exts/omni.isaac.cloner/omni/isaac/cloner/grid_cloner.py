@@ -6,7 +6,7 @@
 # distribution of this software and related documentation without an express
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 #
-from typing import List, Union
+from typing import List, Union, Optional
 
 import numpy as np
 import omni.usd
@@ -36,9 +36,9 @@ class GridCloner(Cloner):
 
     def get_clone_transforms(
         self,
-        num_clones: int,
-        position_offsets: np.ndarray = None,
-        orientation_offsets: np.ndarray = None,
+        num_clones: Optional[int],
+        position_offsets: Optional[Union[np.ndarray,torch.Tensor]] = None,
+        orientation_offsets: Optional[Union[np.ndarray,torch.Tensor]] = None,
     ):
         """Computes the positions and orientations of clones in a grid.
 
@@ -53,6 +53,10 @@ class GridCloner(Cloner):
             positions (List): Computed positions of all clones.
             orientations (List): Computed orientations of all clones.
         """
+        
+        if num_clones is None:
+            num_clones = len(self._positions)
+        
         # check if inputs are valid
         if position_offsets is not None:
             if len(position_offsets) != num_clones:
