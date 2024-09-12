@@ -11,3 +11,5 @@ otherwise the code may not work as expected.
 The .gitignore is pretty extensive and aggressive so it may be necessary to roll back some of the exclusions in the
 file. My main aim was to ensure that I have all the relevant code which is all the python files, config files, and
 documentation. This way I can minimize the size of the repo.
+
+Collaborators: Prem Gandhi and Andrew Chen
