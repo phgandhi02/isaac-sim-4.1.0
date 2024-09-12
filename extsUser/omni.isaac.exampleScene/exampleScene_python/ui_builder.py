@@ -10,7 +10,9 @@
 import numpy as np
 import omni.timeline
 import omni.ui as ui
-from omni.isaac.core.articulations import Articulation
+from omni.isaac.core.articulations import Articulation, ArticulationGripper
+from omni.isaac.core.controllers import ArticulationController
+from omni.isaac.core.robots import Robot
 from omni.isaac.core.objects.cuboid import FixedCuboid
 from omni.isaac.core.prims import XFormPrim
 from omni.isaac.core.utils.prims import is_prim_path_valid
@@ -132,6 +134,9 @@ class UIBuilder:
     ######################################################################################
 
     def _on_init(self):
+        """_summary_
+        This function is what is used to save the objects from the scene setup. 
+        """        
         self._articulation = None
         self._cuboid = None
         self._scenario = ExampleScenario()
@@ -146,8 +151,8 @@ class UIBuilder:
         XFormPrim(str(sphereLight.GetPath())).set_world_pose([6.5, 0, 12])
 
     def _setup_scene(self):
-        """
-        This function is attached to the Load Button as the setup_scene_fn callback.
+        """_summary_
+         This function is attached to the Load Button as the setup_scene_fn callback.
         On pressing the Load Button, a new instance of World() is created and then this function is called.
         The user should now load their assets onto the stage and add them to the World Scene.
 
@@ -156,33 +161,71 @@ class UIBuilder:
         they may perform a check here to see if their desired assets are already on the stage,
         and avoid loading anything if they are.  In this case, the user would still need to add
         their assets to the World (which has low overhead).  See commented code section in this function.
+        
+        Args:
+            
+        Returns:
+            
+        Raises:
+            
+
+        
         """
+        # # Load the UR10e
+        # robot_prim_path = "/ur10e"
+        # path_to_robot_usd = get_assets_root_path() + "/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd"
+
+        # # Do not reload assets when hot reloading.  This should only be done while extension is under development.
+        # # if not is_prim_path_valid(robot_prim_path):
+        # #     create_new_stage()
+        # #     add_reference_to_stage(path_to_robot_usd, robot_prim_path)
+        # # else:
+        # #     print("Robot already on Stage")
+
+        # create_new_stage()
+        # self._add_light_to_stage()
+        # add_reference_to_stage(path_to_robot_usd, robot_prim_path)
+
+        # # Create a cuboid
+        # self._cuboid = FixedCuboid(
+        #     "/Scenario/cuboid", position=np.array([0.3, 0.3, 0.5]), size=0.05, color=np.array([255, 0, 0])
+        # )
+
+        # self._articulation = Articulation(robot_prim_path)
+
+        # # Add user-loaded objects to the World
+        # world = World.instance()
+        # world.scene.add(self._articulation)
+        # world.scene.add(self._cuboid)
+
         # Load the UR10e
-        robot_prim_path = "/ur10e"
+        robot_position = np.array([0,0,0])
+        robot_orientation = np.array([0,0,0,1])
+        robot_scale = np.ones(3)
+        robot_prim_path = "/World/ur10e"
+        robot_joint_names = ["shoulder_lift_joint", "shoulder_pan_joint", "elbow_joint", "wrist_1_joint",
+                             "wrist_2_joint", "wrist_3_joint", "ee_joint"]
         path_to_robot_usd = get_assets_root_path() + "/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd"
-
-        # Do not reload assets when hot reloading.  This should only be done while extension is under development.
-        # if not is_prim_path_valid(robot_prim_path):
-        #     create_new_stage()
-        #     add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-        # else:
-        #     print("Robot already on Stage")
-
+        
+        path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/conveyor.usd"
+        conveyor_prim_path = "/World/conveyor"
+        
         create_new_stage()
-        self._add_light_to_stage()
-        add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-
-        # Create a cuboid
-        self._cuboid = FixedCuboid(
-            "/Scenario/cuboid", position=np.array([0.3, 0.3, 0.5]), size=0.05, color=np.array([255, 0, 0])
-        )
-
-        self._articulation = Articulation(robot_prim_path)
-
         # Add user-loaded objects to the World
         world = World.instance()
-        world.scene.add(self._articulation)
-        world.scene.add(self._cuboid)
+        
+        self._add_light_to_stage()
+        add_reference_to_stage(path_to_robot_usd, robot_prim_path)
+        
+        world.scene.add(Robot(prim_path=robot_prim_path,
+                              position=robot_position,
+                              orientation= robot_orientation,
+                              scale=robot_scale,
+                              visible=True
+                              )
+                        )
+        
+        add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
 
     def _setup_scenario(self):
         """
