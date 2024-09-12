@@ -210,11 +210,15 @@ class UIBuilder:
         path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/conveyor.usd"
         conveyor_prim_path = "/World/conveyor"
         
+        path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/teeth_retainer.usd"
+        teeth_prim_path = "/World/teeth"
+        
         create_new_stage()
         # Add user-loaded objects to the World
         world = World.instance()
         
         self._add_light_to_stage()
+        world.scene.add_default_ground_plane()
         add_reference_to_stage(path_to_robot_usd, robot_prim_path)
         
         world.scene.add(Robot(prim_path=robot_prim_path,
@@ -226,6 +230,8 @@ class UIBuilder:
                         )
         
         add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
+        add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
+        
 
     def _setup_scenario(self):
         """
