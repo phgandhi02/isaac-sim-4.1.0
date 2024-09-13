@@ -10,12 +10,14 @@
 import numpy as np
 import omni.timeline
 import omni.ui as ui
+from omni.isaac.core.simulation_context.simulation_context import SimulationContext
 from omni.isaac.core.articulations import Articulation, ArticulationGripper
 from omni.isaac.core.robots import Robot, RobotView
-from omni.isaac.core.prims import XFormPrim
+from omni.isaac.core.prims import XFormPrim, XFormPrimView
 from omni.isaac.cloner import GridCloner
 from omni.isaac.core.utils.prims import is_prim_path_valid
 from omni.isaac.core.utils.stage import add_reference_to_stage, create_new_stage, get_current_stage
+from omni.isaac.core.utils.rotations import euler_angles_to_quat
 from omni.isaac.core.world import World
 from omni.isaac.nucleus import get_assets_root_path
 from omni.isaac.ui.element_wrappers import CollapsableFrame, StateButton
@@ -23,6 +25,7 @@ from omni.isaac.ui.element_wrappers.core_connectors import LoadButton, ResetButt
 from omni.isaac.ui.ui_utils import get_style
 from omni.usd import StageEventType
 from pxr import Sdf, UsdLux
+import torch
 
 from .scenario import ExampleScenario
 
@@ -97,6 +100,18 @@ class UIBuilder:
         Build a custom UI tool to run your extension.
         This function will be called any time the UI window is closed and reopened.
         """
+        
+        if SimulationContext.instance() is not None:
+            self._backend = SimulationContext.instance().backend
+            self._device = SimulationContext.instance().device
+            self._backend_utils = SimulationContext.instance().backend_utils
+        else:
+            import omni.isaac.core.utils.numpy as np_utils
+
+            self._backend = "numpy"
+            self._device = None
+            self._backend_utils = np_utils
+        
         world_controls_frame = CollapsableFrame("World Controls", collapsed=False)
 
         with world_controls_frame:
@@ -105,7 +120,7 @@ class UIBuilder:
                     "Load Button", "LOAD", setup_scene_fn=self._setup_scene, setup_post_load_fn=self._setup_scenario
                 )
                 self._load_btn.set_world_settings(physics_dt=1 / 60.0, rendering_dt=1 / 60.0, 
-                                                  backend="torch", device= "cuda")
+                                                  backend=self._backend, device= self._device)
                 
                 self.wrapped_ui_elements.append(self._load_btn)
 
@@ -164,21 +179,22 @@ class UIBuilder:
         their assets to the World (which has low overhead).  See commented code section in this function.
         """
         # Load the UR10e
-        base_env_path = "/World/robots"
-        robot_offset = np.array([-3,1,0])
-        robot_orientation = np.array([1,0,0,0])
-        robot_scale = np.ones(3)
-        robot_prim_path = "/World/robots/ur10e"
+        num_clones = 8
+        base_env_path = "/World/env"
+        robot_offset = torch.tensor([0,1,0])
+        robot_orientation = torch.tensor([1,0,0,0])
+        robot_scale = torch.ones(3)
+        robot_prim_path = base_env_path + "/ur10e"
         robot_joint_names = ["shoulder_lift_joint", "shoulder_pan_joint", "elbow_joint", "wrist_1_joint",
                              "wrist_2_joint", "wrist_3_joint", "ee_joint"]
         path_to_robot_usd = get_assets_root_path() + "/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd"
         
         path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/conveyor.usd"
-        conveyor_prim_path = "/World/conveyor"
-        conveyor_scale = np.array([1,1,.1])
+        conveyor_prim_path = base_env_path + "/env/conveyor"
+        conveyor_scale = torch.tensor([1,1,.1])
         
         path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/teeth_retainer.usd"
-        teeth_prim_path = "/World/teeth"
+        teeth_prim_path = base_env_path + "/env/teeth"
         
         create_new_stage()
         # Add user-loaded objects to the World
@@ -196,25 +212,6 @@ class UIBuilder:
                               )
                         )
         
-        cloner = GridCloner(2,num_per_row=1,stage=world.stage)
-        cloner.define_base_env(base_env_path=base_env_path)
-        robot_prim_paths = cloner.generate_paths(robot_prim_path,8)
-        
-        robot_positions, robot_orientations = cloner.clone(source_prim_path=robot_prim_path,
-                                                            prim_paths=robot_prim_paths,
-                                                            position_offsets=np.repeat(robot_offset,len(robot_prim_paths),1),
-                                                            replicate_physics=True,
-                                                            base_env_path=base_env_path,
-                                                            copy_from_source=True
-                                                        )
-        
-        print(robot_positions)
-        
-        world.scene.add(RobotView(prim_paths_expr="/World/robots/*",
-                                  name="ur10_robot_view"
-                                  )
-                        )
-        
         add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
         add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
         
@@ -223,10 +220,53 @@ class UIBuilder:
                               visible=True
                               )
                         )
-        world.scene.add(XFormPrim(prim_path=teeth_prim_path,
-                                  translation=np.array([-2.6,0,0.25])
+        # teeth = world.scene.add(XFormPrimView(prim_path=teeth_prim_path,
+        #                                       name="teethView",
+        #                                       translation=np.array([-2.6,0,0.25])
+        #                                       )
+        #                         )
+
+        cloner = GridCloner(2,num_per_row=1,stage=world.stage)
+        robot_prim_paths = cloner.generate_paths(robot_prim_path,num_clones)
+        print(robot_prim_paths)
+        robot_offsets = torch.tensor([-2,1,0]).repeat(num_clones,1)
+        # robot_offsets[:,0] = robot_offsets[:,0] + torch.arange(num_clones)*2 - 1
+        # robot_offsets = robot_offsets.detach().numpy()
+        # robot_positions = cloner.get_clone_transforms(num_clones=num_clones,position_offsets=robot_offsets)
+        # print(robot_positions)
+        robot_positions, robot_orientations = cloner.clone(source_prim_path=robot_prim_path,
+                                                            prim_paths=robot_prim_paths,
+                                                            position_offsets=robot_offsets,
+                                                            base_env_path="/World",
+                                                            copy_from_source=True
+                                                        )
+        
+        teeth_orientation = euler_angles_to_quat(np.array([100.0,0,0]))
+        teeth_positions_offset = torch.tensor([-2.6,0,0.25]).repeat(num_clones,1)
+        teeth_orientation_offset = torch.tensor(teeth_orientation).repeat(num_clones,1)
+        cloner = GridCloner(2,num_per_row=1,stage=world.stage)
+        teeth_positions, teeth_orientations = cloner.clone(source_prim_path=teeth_prim_path,
+                                                            prim_paths= cloner.generate_paths(teeth_prim_path,num_clones),
+                                                            position_offsets=teeth_positions_offset,
+                                                            orientation_offsets=teeth_orientation_offset,
+                                                            base_env_path="/World/env/env",
+                                                            copy_from_source=True
+                                                        )
+        print(robot_positions)
+        robots = world.scene.add(RobotView(prim_paths_expr=base_env_path + "/ur10*",
+                                  name="ur10_robot_view"
                                   )
                         )
+    
+        teeths = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/teeth*",
+                                        name="teethView"
+                                        )
+                        )
+        
+        print("printing poses")
+        print(robots.get_world_poses())
+        # print(teeths.get_world_poses())
+    
         print('ext started')
         
         
@@ -250,7 +290,7 @@ class UIBuilder:
 
     def _reset_scenario(self):
         self._scenario.teardown_scenario()
-        self._scenario.setup_scenario(self._articulation, self._cuboid)
+        self._scenario.setup_scenario()
 
     def _on_post_reset_btn(self):
         """
