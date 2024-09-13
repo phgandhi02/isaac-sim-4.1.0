@@ -173,8 +173,8 @@ class GridCloner(Cloner):
             copy_from_source=copy_from_source,
         )
         
-        self._positions = np.array(positions)
-        self._orientations = np.array(orientations)
+        self._positions = positions
+        self._orientations = orientations
         return positions,orientations
     
     @property
