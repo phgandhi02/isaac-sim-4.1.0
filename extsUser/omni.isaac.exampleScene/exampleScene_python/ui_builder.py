@@ -220,11 +220,6 @@ class UIBuilder:
                               visible=True
                               )
                         )
-        # teeth = world.scene.add(XFormPrimView(prim_path=teeth_prim_path,
-        #                                       name="teethView",
-        #                                       translation=np.array([-2.6,0,0.25])
-        #                                       )
-        #                         )
 
         cloner = GridCloner(2,num_per_row=1,stage=world.stage)
         robot_prim_paths = cloner.generate_paths(robot_prim_path,num_clones)
@@ -241,6 +236,7 @@ class UIBuilder:
                                                             copy_from_source=True
                                                         )
         
+        # instantiate teeth
         teeth_orientation = euler_angles_to_quat(np.array([100.0,0,0]))
         teeth_positions_offset = torch.tensor([-2.6,0,0.25]).repeat(num_clones,1)
         teeth_orientation_offset = torch.tensor(teeth_orientation).repeat(num_clones,1)
@@ -253,6 +249,7 @@ class UIBuilder:
                                                             copy_from_source=True
                                                         )
         print(robot_positions)
+        print(teeth_positions)
         robots = world.scene.add(RobotView(prim_paths_expr=base_env_path + "/ur10*",
                                   name="ur10_robot_view"
                                   )
