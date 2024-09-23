@@ -3,7 +3,7 @@
 This is the README for Isaac Sim. I will try to document the codebase as much as possible. I hope to further document
 the code so that it will be easier to understand for anyone else that uses this. 
 
-## Installation
+## Installation:
 Make sure that you only download this on Linux. I have not tested Windows download. Please check my isaac-sim-2023.1.0 
 to see the Windows version.
 The installation procedure would be to follow the instructions to download omniverse and isaac sim on the Nvidia
@@ -13,5 +13,11 @@ otherwise the code may not work as expected.
 The .gitignore is pretty extensive and aggressive so it may be necessary to roll back some of the exclusions in the
 file. My main aim was to ensure that I have all the relevant code which is all the python files, config files, and
 documentation. This way I can minimize the size of the repo.
+
+## Usage:
+Also, to use the gpu do the following:
+1. launch isaac sim from the omniverse launcher
+2. type in --/physics/cudaDevice=0 (or another number depending on the index.).
+    - This should ensure that your code runs on the gpu which will make running it a lot faster, especially if you have parallel instances running. 
 
 Collaborators: Prem Gandhi and Andrew Chen
