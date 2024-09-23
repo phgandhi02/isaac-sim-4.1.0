@@ -28,7 +28,7 @@ from pxr import Sdf, UsdLux
 import torch
 
 from .scenario import ExampleScenario
-
+import omni.graph.core as og
 
 class UIBuilder:
 	def __init__(self):
@@ -189,11 +189,11 @@ class UIBuilder:
 							 "wrist_2_joint", "wrist_3_joint", "ee_joint"]
 		path_to_robot_usd = get_assets_root_path() + "/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd"
 		
-		path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/conveyor.usd"
+		path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/conveyor.usd"
 		conveyor_prim_path = base_env_path + "/env/conveyor"
 		conveyor_scale = torch.tensor([1,1,.1])
 		
-		path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/teeth_retainer.usd"
+		path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/teeth_retainer.usd"
 		teeth_prim_path = base_env_path + "/env/teeth"
 		
 		create_new_stage()
@@ -202,7 +202,7 @@ class UIBuilder:
 		
 		self._add_light_to_stage()
 		world.scene.add_default_ground_plane()
-		add_reference_to_stage(path_to_robot_usd, robot_prim_path)
+		robotReference = add_reference_to_stage(path_to_robot_usd, robot_prim_path)
 		world.scene.add(Robot(robot_prim_path,
 							  name="ur10",
 							  position=robot_offset,
@@ -213,9 +213,20 @@ class UIBuilder:
 						)
 		
 		add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
+		
 		add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
 		
-		world.scene.add(XFormPrim(prim_path=conveyor_prim_path, scale=conveyor_scale, visible=True))
+		# world.scene.add(XFormPrim(prim_path=conveyor_prim_path, 
+        #                     scale=conveyor_scale, visible=True))
+  
+		world.scene.add(XFormPrim(conveyor_prim_path,
+							  name="conveyor",
+							  position=torch.tensor([6,0,0]),
+							  orientation=torch.tensor([1,0,0,0]),
+							  scale=conveyor_scale,
+							  visible=True
+							  )
+						)
 
 		# instantiate the robots
 		cloner = GridCloner(2,num_per_row=1,stage=world.stage)
@@ -227,9 +238,17 @@ class UIBuilder:
 			base_env_path="/World",
 			copy_from_source=True
 		)
+  
+		# instantiate the conveyor belt
+		cloner = GridCloner(2,num_per_row=1,stage=world.stage)
+		conveyor_positions, conveyor_orientations = cloner.clone(source_prim_path=conveyor_prim_path,
+			prim_paths= cloner.generate_paths(conveyor_prim_path,num_clones),
+			base_env_path="/World/env/env",
+            copy_from_source=True
+		)
 		
 		# instantiate teeth
-		teeth_orientation = euler_angles_to_quat(np.array([100.0,0,0]))
+		teeth_orientation = euler_angles_to_quat(np.array([110,0,0]))
 		teeth_positions_offset = torch.tensor([-2.6,0,0.25]).repeat(num_clones,1)
 		teeth_orientation_offset = torch.tensor(teeth_orientation).repeat(num_clones,1)
 		cloner = GridCloner(2,num_per_row=1,stage=world.stage)
@@ -246,17 +265,38 @@ class UIBuilder:
 								  name="ur10_robot_view"
 								  )
 						)
-	
+		conveyors = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/conveyor*",
+										name="conveyorView"
+										)
+						)
+  
 		teeths = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/teeth*",
 										name="teethView"
 										)
 						)
-		
-		print("printing poses")
-		print(robots.get_world_poses())
+  
+		# omni.kit.commands.execute(
+        #         "RemoveReference", stage=world.stage, prim_path=Sdf.Path(robot_prim_path), reference=robotReference
+        #     )
+		# world.scene.remove_object(robot_prim_path)
+  
+		world.scene.add(Robot(robot_prim_path,
+							  name="ur10e",
+							  position=robot_offset,
+							  orientation=robot_orientation,
+							  scale=robot_scale,
+							  visible=False
+							  )
+						)
+  
+		# print("printing poses")
+		# print(robots.get_world_poses())
 		# print(teeths.get_world_poses())
 	
-		print('ext started')
+		# print('ext started')
+		# get existing value from an attribute
+  
+	
 		
 		
 		
