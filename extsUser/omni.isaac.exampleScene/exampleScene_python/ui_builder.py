@@ -14,9 +14,13 @@ from omni.isaac.core.simulation_context.simulation_context import SimulationCont
 from omni.isaac.core.articulations import Articulation, ArticulationGripper
 from omni.isaac.core.robots import Robot, RobotView
 from omni.isaac.core.prims import XFormPrim, XFormPrimView
+
+from omni.isaac.sensor import Camera
+
 from omni.isaac.cloner import GridCloner
 from omni.isaac.core.utils.prims import is_prim_path_valid
 from omni.isaac.core.utils.stage import add_reference_to_stage, create_new_stage, get_current_stage
+from omni.kit.viewport.utility import get_active_viewport
 from omni.isaac.core.utils.rotations import euler_angles_to_quat
 from omni.isaac.core.world import World
 from omni.isaac.nucleus import get_assets_root_path
@@ -179,9 +183,10 @@ class UIBuilder:
 		their assets to the World (which has low overhead).  See commented code section in this function.
 		"""
 		# Load the UR10e
+		resolution = [1280, 720]
 		num_clones = 1
 		base_env_path = "/World/env"
-		robot_offset = torch.tensor([0,1,0])
+		robot_offset = torch.tensor([0,1.5,0])
 		robot_orientation = torch.tensor([1,0,0,0])
 		robot_scale = torch.ones(3)
 		robot_prim_path = base_env_path + "/ur10e"
@@ -203,7 +208,7 @@ class UIBuilder:
 		self._add_light_to_stage()
 		world.scene.add_default_ground_plane()
 		robotReference = add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-		world.scene.add(Robot(robot_prim_path,
+		self.ur10 = world.scene.add(Robot(robot_prim_path,
 							  name="ur10",
 							  position=robot_offset,
 							  orientation=robot_orientation,
@@ -211,7 +216,7 @@ class UIBuilder:
 							  visible=True
 							  )
 						)
-		
+		self.ur10.set_joint_positions(np.array([0,-71.5,64.4,-83.0,251.9,-179.3]))
 		add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
 		
 		add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
@@ -243,12 +248,9 @@ class UIBuilder:
 		random_teeth_position_offset = teeth_positions_offset + (-.1-.1)*torch.rand_like(teeth_positions_offset) + .1
 		random_teeth_orientation_offset = []#torch.Tensor([1,0,0,0])
 		for i in range(num_clones):
-			randOrientation = torch.from_numpy(euler_angles_to_quat(100*torch.randn(3)))
+			randOrientation = torch.from_numpy(euler_angles_to_quat(100*torch.randn(3),True))
 			random_teeth_orientation_offset.append(randOrientation)
-			# random_teeth_orientation_offset = torch.cat((random_teeth_orientation_offset,randOrientation))
-		print(random_teeth_orientation_offset)
-		# teeth_orientation_offset = torch.tensor(teeth_orientation_offset).repeat(num_clones,1)
-		# random_teeth_orientation_offset = teeth_orientation_offset*((-1-1)*torch.rand_like(teeth_orientation_offset) + 1)
+   
 		cloner = GridCloner(.1,num_per_row=4,stage=world.stage)
 		print(len(cloner.generate_paths(teeth_prim_path,num_clones)))
 		print(len(random_teeth_orientation_offset))
@@ -260,12 +262,25 @@ class UIBuilder:
 			copy_from_source=True
 		)
 
-		teeths = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/teeth*",
+		self.teeths = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/teeth*",
 										name="teethView"
 										)
 						)
-		# print(robot_positions)
-		# print(teeth_positions)
+		viewport_api = get_active_viewport()
+		render_product_path = viewport_api.get_render_product_path()
+		camera = Camera(
+				prim_path="/World/env/ur10e/tool0/Camera" ,
+				position=np.array([0, 0, 0]),
+				resolution=resolution,
+				orientation=euler_angles_to_quat([0, 0, 0], degrees=True),
+				render_product_path=render_product_path,
+			)
+
+		camera.initialize()
+		print('Teeth positions: \n')
+		print(teeth_positions)
+		print('\nTeeth orientation: \n')
+		print(teeth_orientations)
   
 		
 		
@@ -289,7 +304,7 @@ class UIBuilder:
 
 	def _reset_scenario(self):
 		self._scenario.teardown_scenario()
-		self._scenario.setup_scenario()
+		self._scenario.setup_scenario(self.ur10, self.teeths)
 
 	def _on_post_reset_btn(self):
 		"""
