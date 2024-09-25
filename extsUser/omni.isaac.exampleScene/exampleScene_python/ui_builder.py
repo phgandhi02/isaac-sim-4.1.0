@@ -227,17 +227,35 @@ class UIBuilder:
 							  visible=True
 							  )
 						)
+		world.scene.add(XFormPrim(teeth_prim_path,
+							  name="teeth",
+							  position=torch.tensor([1,0,0]),
+							  orientation=euler_angles_to_quat(torch.tensor([130,0,0])),
+							  scale=robot_scale,
+							  visible=True
+							  )
+						)
 		
 		# instantiate teeth
 		num_clones = 20
-		teeth_orientation = euler_angles_to_quat(np.array([110,0,0]))
-		teeth_positions_offset = torch.tensor([0,0,0.25]).repeat(num_clones,1)
-		teeth_orientation_offset = torch.tensor(teeth_orientation).repeat(num_clones,1)
+		teeth_orientation_offset = euler_angles_to_quat(torch.tensor([0,0,0]))
+		teeth_positions_offset = torch.tensor([0,0,0.3]).repeat(num_clones,1)
+		random_teeth_position_offset = teeth_positions_offset + (-.1-.1)*torch.rand_like(teeth_positions_offset) + .1
+		random_teeth_orientation_offset = []#torch.Tensor([1,0,0,0])
+		for i in range(num_clones):
+			randOrientation = torch.from_numpy(euler_angles_to_quat(100*torch.randn(3)))
+			random_teeth_orientation_offset.append(randOrientation)
+			# random_teeth_orientation_offset = torch.cat((random_teeth_orientation_offset,randOrientation))
+		print(random_teeth_orientation_offset)
+		# teeth_orientation_offset = torch.tensor(teeth_orientation_offset).repeat(num_clones,1)
+		# random_teeth_orientation_offset = teeth_orientation_offset*((-1-1)*torch.rand_like(teeth_orientation_offset) + 1)
 		cloner = GridCloner(.1,num_per_row=4,stage=world.stage)
+		print(len(cloner.generate_paths(teeth_prim_path,num_clones)))
+		print(len(random_teeth_orientation_offset))
 		teeth_positions, teeth_orientations = cloner.clone(source_prim_path=teeth_prim_path,
-			prim_paths= cloner.generate_paths(teeth_prim_path,num_clones),
-			position_offsets=teeth_positions_offset,
-			orientation_offsets=teeth_orientation_offset,
+			prim_paths=cloner.generate_paths(teeth_prim_path,num_clones) ,
+			position_offsets=random_teeth_position_offset,
+			orientation_offsets=random_teeth_orientation_offset,
 			base_env_path="/World/env/env",
 			copy_from_source=True
 		)
