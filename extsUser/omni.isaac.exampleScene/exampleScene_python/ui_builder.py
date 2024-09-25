@@ -227,38 +227,6 @@ class UIBuilder:
 							  visible=True
 							  )
 						)
-
-		# # instantiate the robots
-		# cloner = GridCloner(2,num_per_row=1,stage=world.stage)
-		# robot_prim_paths = cloner.generate_paths(robot_prim_path,num_clones)
-		# robot_offsets = torch.tensor([-2,1,0]).repeat(num_clones,1)
-		# robot_positions, robot_orientations = cloner.clone(source_prim_path=robot_prim_path,
-		# 	prim_paths=robot_prim_paths,
-		# 	position_offsets=robot_offsets,
-		# 	base_env_path="/World",
-		# 	copy_from_source=True
-		# )
-
-		# robots = world.scene.add(RobotView(prim_paths_expr=base_env_path + "/ur10*",
-		# 						  name="ur10_robot_view"
-		# 						  )
-		# 				)
-  
-		# # instantiate the conveyor belt
-		# cloner = GridCloner(2,num_per_row=1,stage=world.stage)
-		# conveyor_positions_offset = torch.tensor([-2,0,0]).repeat(num_clones,1)
-		# conveyor_positions, conveyor_orientations = cloner.clone(source_prim_path=conveyor_prim_path,
-		# 	prim_paths= cloner.generate_paths(conveyor_prim_path,num_clones),
-		# 	position_offsets=conveyor_positions_offset,
-		# 	base_env_path="/World/env/env",
-		# 	copy_from_source=True
-		# )
-  
-		# conveyors = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/conveyor*",
-		# 								name="conveyorView"
-		# 								)
-		# 				)
-  
 		
 		# instantiate teeth
 		num_clones = 20
