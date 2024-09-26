@@ -186,7 +186,7 @@ class UIBuilder:
 		resolution = [1280, 720]
 		num_clones = 1
 		base_env_path = "/World/env"
-		robot_offset = torch.tensor([0,1.5,0])
+		robot_offset = torch.tensor([0.23385,0.30645,0.51141])
 		robot_orientation = torch.tensor([1,0,0,0])
 		robot_scale = torch.ones(3)
 		robot_prim_path = base_env_path + "/ur10e"
@@ -196,10 +196,13 @@ class UIBuilder:
 		
 		path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/conveyor.usd"
 		conveyor_prim_path = base_env_path + "/env/conveyor"
-		conveyor_scale = torch.tensor([1,1,.1])
+		conveyor_scale = torch.tensor([0.70154,0.3024,0.35089])
 		
 		path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/teeth_retainer.usd"
 		teeth_prim_path = base_env_path + "/env/teeth"
+
+		path_to_robotStand = get_assets_root_path() + "/Isaac/Props/Mounts/Stand/stand_instanceable.usd"
+		robotStand_prim_path = base_env_path + "/stand"
 		
 		create_new_stage()
 		# Add user-loaded objects to the World
@@ -218,7 +221,7 @@ class UIBuilder:
 						)
 		self.ur10.set_joint_positions(np.array([0,-71.5,64.4,-83.0,251.9,-179.3]))
 		add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
-		
+		add_reference_to_stage(path_to_robotStand, robotStand_prim_path)
 		add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
 		
 		# world.scene.add(XFormPrim(prim_path=conveyor_prim_path, 
@@ -234,8 +237,17 @@ class UIBuilder:
 						)
 		world.scene.add(XFormPrim(teeth_prim_path,
 							  name="teeth",
-							  position=torch.tensor([1,0,0]),
+							  position=torch.tensor([0,0,0.74331]),
 							  orientation=euler_angles_to_quat(torch.tensor([130,0,0])),
+							  scale=robot_scale,
+							  visible=True
+							  )
+						)
+
+		world.scene.add(XFormPrim(robotStand_prim_path,
+							  name="stand",
+							  position=torch.tensor([0.22771,0.30781,0.50644]),
+							  orientation=euler_angles_to_quat(torch.tensor([0,0,0])),
 							  scale=robot_scale,
 							  visible=True
 							  )
@@ -244,14 +256,14 @@ class UIBuilder:
 		# instantiate teeth
 		num_clones = 20
 		teeth_orientation_offset = euler_angles_to_quat(torch.tensor([0,0,0]))
-		teeth_positions_offset = torch.tensor([0,0,0.3]).repeat(num_clones,1)
-		random_teeth_position_offset = teeth_positions_offset + (-.1-.1)*torch.rand_like(teeth_positions_offset) + .1
+		teeth_positions_offset = torch.tensor([0.2,0,0.74331]).repeat(num_clones,1)
+		random_teeth_position_offset = teeth_positions_offset + (-.05-.05)*torch.rand_like(teeth_positions_offset) + .05
 		random_teeth_orientation_offset = []#torch.Tensor([1,0,0,0])
 		for i in range(num_clones):
 			randOrientation = torch.from_numpy(euler_angles_to_quat(100*torch.randn(3),True))
 			random_teeth_orientation_offset.append(randOrientation)
    
-		cloner = GridCloner(.1,num_per_row=4,stage=world.stage)
+		cloner = GridCloner(.1,num_per_row=2,stage=world.stage)
 		print(len(cloner.generate_paths(teeth_prim_path,num_clones)))
 		print(len(random_teeth_orientation_offset))
 		teeth_positions, teeth_orientations = cloner.clone(source_prim_path=teeth_prim_path,
@@ -266,17 +278,17 @@ class UIBuilder:
 										name="teethView"
 										)
 						)
-		viewport_api = get_active_viewport()
-		render_product_path = viewport_api.get_render_product_path()
-		camera = Camera(
-				prim_path="/World/env/ur10e/tool0/Camera" ,
-				position=np.array([0, 0, 0]),
-				resolution=resolution,
-				orientation=euler_angles_to_quat([0, 0, 0], degrees=True),
-				render_product_path=render_product_path,
-			)
+		# viewport_api = get_active_viewport()
+		# render_product_path = viewport_api.get_render_product_path()
+		# camera = Camera(
+		# 		prim_path="/World/env/ur10e/tool0/Camera" ,
+		# 		position=np.array([0, 0, 0]),
+		# 		resolution=resolution,
+		# 		orientation=euler_angles_to_quat([0, 0, 0], degrees=True),
+		# 		render_product_path=render_product_path,
+		# 	)
 
-		camera.initialize()
+		# camera.initialize()
 		print('Teeth positions: \n')
 		print(teeth_positions)
 		print('\nTeeth orientation: \n')
