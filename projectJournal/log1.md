@@ -14,6 +14,6 @@ I found a good video on implementing an extension to generate scene with multipl
 
 Pretty much you just add a reference and then use the world.scene.add(prim, ... , etc.) to modify the attributes of the 
 prim. This is how omniverse and Isaac offers an easier interface to the OpenUSD SW. You just put all the objects in the
-_setup_scene() function within the [ui_builder.py](../extsUser/exampleScene/omni_isaac_exampleScene_python/ui_builder.py). 
+_setup_scene() function within the [ui_builder.py](../extsUser/syntheticDataGen/omni_isaac_syntheticDataGen_python/ui_builder.py). 
 
-[scenario.py](../extsUser/exampleScene/omni_isaac_exampleScene_python/scenario.py) is used for handling any of the logic at higher level ie. used the ui_builder.py to construct the scene and create attributes to self. Then call those attributes in the scenario and perform logic to run during the sim run.
+[scenario.py](../extsUser/syntheticDataGen/omni_isaac_syntheticDataGen_python/scenario.py) is used for handling any of the logic at higher level ie. used the ui_builder.py to construct the scene and create attributes to self. Then call those attributes in the scenario and perform logic to run during the sim run.
