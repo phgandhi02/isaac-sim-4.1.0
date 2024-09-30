@@ -4,4 +4,4 @@
 
 ### Added
 
-- Initial version of exampleScene Extension
+- Initial version of syntheticDataGen Extension

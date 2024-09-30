@@ -7,6 +7,6 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 #
 
-EXTENSION_TITLE = "exampleScene"
+EXTENSION_TITLE = "syntheticDataGen"
 
 EXTENSION_DESCRIPTION = "Simple homemade example of creating a scene"
