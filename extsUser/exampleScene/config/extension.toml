@@ -5,8 +5,8 @@ order = 0
 [package]
 version = "1.0.0"
 category = "Simulation"
-title = "syntheticDataGen"
-description = "Simple homemade example of creating a scene"
+title = "exampleScene"
+description = "This is an example Loaded Scenario Template."
 authors = ["NVIDIA"]
 repository = ""
 keywords = []
@@ -24,4 +24,4 @@ icon = "data/icon.png"
 "omni.isaac.conveyor.ui" = {}
 
 [[python.module]]
-name = "syntheticDataGen_python"
+name = "exampleScene_python"
