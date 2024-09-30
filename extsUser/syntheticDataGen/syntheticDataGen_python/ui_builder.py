@@ -183,6 +183,7 @@ class UIBuilder:
 		their assets to the World (which has low overhead).  See commented code section in this function.
 		"""
 		# Load the UR10e
+		resolution = [1280, 720]
 		num_clones = 1
 		base_env_path = "/World/env"
 		robot_offset = torch.tensor([0.23385,0.30645,0.51141])
@@ -243,44 +244,28 @@ class UIBuilder:
 							  )
 						)
 
-		# # instantiate the robots
-		# cloner = GridCloner(2,num_per_row=1,stage=world.stage)
-		# robot_prim_paths = cloner.generate_paths(robot_prim_path,num_clones)
-		# robot_offsets = torch.tensor([-2,1,0]).repeat(num_clones,1)
-		# robot_positions, robot_orientations = cloner.clone(source_prim_path=robot_prim_path,
-		# 	prim_paths=robot_prim_paths,
-		# 	position_offsets=robot_offsets,
-		# 	base_env_path="/World",
-		# 	copy_from_source=True
-		# )
-
-		# robots = world.scene.add(RobotView(prim_paths_expr=base_env_path + "/ur10*",
-		# 						  name="ur10_robot_view"
-		# 						  )
-		# 				)
-  
-		# # instantiate the conveyor belt
-		# cloner = GridCloner(2,num_per_row=1,stage=world.stage)
-		# conveyor_positions_offset = torch.tensor([-2,0,0]).repeat(num_clones,1)
-		# conveyor_positions, conveyor_orientations = cloner.clone(source_prim_path=conveyor_prim_path,
-		# 	prim_paths= cloner.generate_paths(conveyor_prim_path,num_clones),
-		# 	position_offsets=conveyor_positions_offset,
-		# 	base_env_path="/World/env/env",
-		# 	copy_from_source=True
-		# )
-  
-		# conveyors = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/conveyor*",
-		# 								name="conveyorView"
-		# 								)
-		# 				)
-  
+		world.scene.add(XFormPrim(robotStand_prim_path,
+							  name="stand",
+							  position=torch.tensor([0.22771,0.30781,0.50644]),
+							  orientation=euler_angles_to_quat(torch.tensor([0,0,0])),
+							  scale=robot_scale,
+							  visible=True
+							  )
+						)
 		
 		# instantiate teeth
 		num_clones = 20
-		teeth_orientation = euler_angles_to_quat(np.array([110,0,0]))
-		teeth_positions_offset = torch.tensor([0,0,0.25]).repeat(num_clones,1)
-		teeth_orientation_offset = torch.tensor(teeth_orientation).repeat(num_clones,1)
-		cloner = GridCloner(.1,num_per_row=4,stage=world.stage)
+		teeth_orientation_offset = euler_angles_to_quat(torch.tensor([0,0,0]))
+		teeth_positions_offset = torch.tensor([0.2,0,0.74331]).repeat(num_clones,1)
+		random_teeth_position_offset = teeth_positions_offset + (-.05-.05)*torch.rand_like(teeth_positions_offset) + .05
+		random_teeth_orientation_offset = []#torch.Tensor([1,0,0,0])
+		for i in range(num_clones):
+			randOrientation = torch.from_numpy(euler_angles_to_quat(100*torch.randn(3),True))
+			random_teeth_orientation_offset.append(randOrientation)
+   
+		cloner = GridCloner(.1,num_per_row=2,stage=world.stage)
+		print(len(cloner.generate_paths(teeth_prim_path,num_clones)))
+		print(len(random_teeth_orientation_offset))
 		teeth_positions, teeth_orientations = cloner.clone(source_prim_path=teeth_prim_path,
 			prim_paths=cloner.generate_paths(teeth_prim_path,num_clones) ,
 			position_offsets=random_teeth_position_offset,
@@ -289,13 +274,10 @@ class UIBuilder:
 			copy_from_source=True
 		)
 
-		teeths = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/teeth*",
+		self.teeths = world.scene.add(XFormPrimView(prim_paths_expr=base_env_path + "/env/teeth*",
 										name="teethView"
 										)
 						)
-		# print(robot_positions)
-		# print(teeth_positions)
-  
 		# viewport_api = get_active_viewport()
 		# render_product_path = viewport_api.get_render_product_path()
 		# camera = Camera(
@@ -305,83 +287,13 @@ class UIBuilder:
 		# 		orientation=euler_angles_to_quat([0, 0, 0], degrees=True),
 		# 		render_product_path=render_product_path,
 		# 	)
-  
-		# omni.kit.commands.execute(
-		#         "RemoveReference", stage=world.stage, prim_path=Sdf.Path(robot_prim_path), reference=robotReference
-		#     )
-		# world.scene.remove_object(robot_prim_path)
-  
-		# world.scene.add(Robot(robot_prim_path,
-		# 					  name="ur10e",
-		# 					  position=robot_offset,
-		# 					  orientation=robot_orientation,
-		# 					  scale=robot_scale,
-		# 					  visible=False
-		# 					  )
-		# 				)
-  
-		# print("printing poses")
-		# print(robots.get_world_poses())
-		# print(teeths.get_world_poses())
-	
-		# print('ext started')
-		# get existing value from an attribute
-		try:
-			import usdrt.Sdf
-			og.Controller.edit(
-				{"graph_path": "/ActionGraph", "evaluator_name": "execution"},
-				{
-					og.Controller.Keys.CREATE_NODES: [
-						("OnPlaybackTick", "omni.graph.action.OnPlaybackTick"),
-						("ReadSimTime", "omni.isaac.core_nodes.IsaacReadSimulationTime"),
-						("Context", "omni.isaac.ros2_bridge.ROS2Context"),
-						("PublishJointState", "omni.isaac.ros2_bridge.ROS2PublishJointState"),
-						("SubscribeJointState", "omni.isaac.ros2_bridge.ROS2SubscribeJointState"),
-						("ArticulationController", "omni.isaac.core_nodes.IsaacArticulationController"),
-						("PublishClock", "omni.isaac.ros2_bridge.ROS2PublishClock"),
-					],
-					og.Controller.Keys.CONNECT: [
-						("OnPlaybackTick.outputs:tick", "PublishJointState.inputs:execIn"),
-						("OnPlaybackTick.outputs:tick", "SubscribeJointState.inputs:execIn"),
-						("OnPlaybackTick.outputs:tick", "PublishClock.inputs:execIn"),
-						("OnPlaybackTick.outputs:tick", "ArticulationController.inputs:execIn"),
-						("Context.outputs:context", "PublishJointState.inputs:context"),
-						("Context.outputs:context", "SubscribeJointState.inputs:context"),
-						("Context.outputs:context", "PublishClock.inputs:context"),
-						("ReadSimTime.outputs:simulationTime", "PublishJointState.inputs:timeStamp"),
-						("ReadSimTime.outputs:simulationTime", "PublishClock.inputs:timeStamp"),
-						("SubscribeJointState.outputs:jointNames", "ArticulationController.inputs:jointNames"),
-						(
-							"SubscribeJointState.outputs:positionCommand",
-							"ArticulationController.inputs:positionCommand",
-						),
-						(
-							"SubscribeJointState.outputs:velocityCommand",
-							"ArticulationController.inputs:velocityCommand",
-						),
-						("SubscribeJointState.outputs:effortCommand", "ArticulationController.inputs:effortCommand"),
-					],
-					og.Controller.Keys.SET_VALUES: [
-						# Setting the /Franka target prim to Articulation Controller node
-						("ArticulationController.inputs:robotPath", robot_prim_path),
-						("PublishJointState.inputs:topicName", "isaac_joint_states"),
-						("SubscribeJointState.inputs:topicName", "isaac_joint_commands"),
-						("PublishJointState.inputs:targetPrim", [usdrt.Sdf.Path(robot_prim_path)]),
-					],
-				},
-			)
-		except Exception as e:
-			print(e)
 
-
-		# print(og.get_graph_by_path("/World/env/env/conveyor_0/ConveyorTrack/ConveyorBeltGraph"))
-		# print(og.get_graph_by_path("/ActionGraph"))
-		# existing_text = og.Controller.attribute("/action_graph/print.inputs:text").get()
-		# print("Existing Text: ", existing_text)
-
-		# # set new value
-		# og.Controller.attribute("/action_graph/print.inputs:text").set("New Texts to print")
-	
+		# camera.initialize()
+		print('Teeth positions: \n')
+		print(teeth_positions)
+		print('\nTeeth orientation: \n')
+		print(teeth_orientations)
+  
 		
 		
 		
