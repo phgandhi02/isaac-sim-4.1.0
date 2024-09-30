@@ -14,9 +14,13 @@ from omni.isaac.core.simulation_context.simulation_context import SimulationCont
 from omni.isaac.core.articulations import Articulation, ArticulationGripper
 from omni.isaac.core.robots import Robot, RobotView
 from omni.isaac.core.prims import XFormPrim, XFormPrimView
+
+from omni.isaac.sensor import Camera
+
 from omni.isaac.cloner import GridCloner
 from omni.isaac.core.utils.prims import is_prim_path_valid
 from omni.isaac.core.utils.stage import add_reference_to_stage, create_new_stage, get_current_stage
+from omni.kit.viewport.utility import get_active_viewport
 from omni.isaac.core.utils.rotations import euler_angles_to_quat
 from omni.isaac.core.world import World
 from omni.isaac.nucleus import get_assets_root_path
@@ -181,7 +185,7 @@ class UIBuilder:
 		# Load the UR10e
 		num_clones = 1
 		base_env_path = "/World/env"
-		robot_offset = torch.tensor([0,1,0])
+		robot_offset = torch.tensor([0.23385,0.30645,0.51141])
 		robot_orientation = torch.tensor([1,0,0,0])
 		robot_scale = torch.ones(3)
 		robot_prim_path = base_env_path + "/ur10e"
@@ -191,10 +195,13 @@ class UIBuilder:
 		
 		path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/conveyor.usd"
 		conveyor_prim_path = base_env_path + "/env/conveyor"
-		conveyor_scale = torch.tensor([1,1,.1])
+		conveyor_scale = torch.tensor([0.70154,0.3024,0.35089])
 		
 		path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/teeth_retainer.usd"
 		teeth_prim_path = base_env_path + "/env/teeth"
+
+		path_to_robotStand = get_assets_root_path() + "/Isaac/Props/Mounts/Stand/stand_instanceable.usd"
+		robotStand_prim_path = base_env_path + "/stand"
 		
 		create_new_stage()
 		# Add user-loaded objects to the World
@@ -203,7 +210,7 @@ class UIBuilder:
 		self._add_light_to_stage()
 		world.scene.add_default_ground_plane()
 		robotReference = add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-		world.scene.add(Robot(robot_prim_path,
+		self.ur10 = world.scene.add(Robot(robot_prim_path,
 							  name="ur10",
 							  position=robot_offset,
 							  orientation=robot_orientation,
@@ -211,9 +218,9 @@ class UIBuilder:
 							  visible=True
 							  )
 						)
-		
+		self.ur10.set_joint_positions(np.array([0,-71.5,64.4,-83.0,251.9,-179.3]))
 		add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
-		
+		add_reference_to_stage(path_to_robotStand, robotStand_prim_path)
 		add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
 		
 		# world.scene.add(XFormPrim(prim_path=conveyor_prim_path, 
@@ -224,6 +231,14 @@ class UIBuilder:
 							  position=torch.tensor([1,0,0]),
 							  orientation=torch.tensor([1,0,0,0]),
 							  scale=conveyor_scale,
+							  visible=True
+							  )
+						)
+		world.scene.add(XFormPrim(teeth_prim_path,
+							  name="teeth",
+							  position=torch.tensor([0,0,0.74331]),
+							  orientation=euler_angles_to_quat(torch.tensor([130,0,0])),
+							  scale=robot_scale,
 							  visible=True
 							  )
 						)
@@ -267,9 +282,9 @@ class UIBuilder:
 		teeth_orientation_offset = torch.tensor(teeth_orientation).repeat(num_clones,1)
 		cloner = GridCloner(.1,num_per_row=4,stage=world.stage)
 		teeth_positions, teeth_orientations = cloner.clone(source_prim_path=teeth_prim_path,
-			prim_paths= cloner.generate_paths(teeth_prim_path,num_clones),
-			position_offsets=teeth_positions_offset,
-			orientation_offsets=teeth_orientation_offset,
+			prim_paths=cloner.generate_paths(teeth_prim_path,num_clones) ,
+			position_offsets=random_teeth_position_offset,
+			orientation_offsets=random_teeth_orientation_offset,
 			base_env_path="/World/env/env",
 			copy_from_source=True
 		)
@@ -280,6 +295,16 @@ class UIBuilder:
 						)
 		# print(robot_positions)
 		# print(teeth_positions)
+  
+		# viewport_api = get_active_viewport()
+		# render_product_path = viewport_api.get_render_product_path()
+		# camera = Camera(
+		# 		prim_path="/World/env/ur10e/tool0/Camera" ,
+		# 		position=np.array([0, 0, 0]),
+		# 		resolution=resolution,
+		# 		orientation=euler_angles_to_quat([0, 0, 0], degrees=True),
+		# 		render_product_path=render_product_path,
+		# 	)
   
 		# omni.kit.commands.execute(
 		#         "RemoveReference", stage=world.stage, prim_path=Sdf.Path(robot_prim_path), reference=robotReference
@@ -379,7 +404,7 @@ class UIBuilder:
 
 	def _reset_scenario(self):
 		self._scenario.teardown_scenario()
-		self._scenario.setup_scenario()
+		self._scenario.setup_scenario(self.ur10, self.teeths)
 
 	def _on_post_reset_btn(self):
 		"""

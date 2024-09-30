@@ -40,10 +40,13 @@ class ExampleScenario(ScenarioTemplate):
     def __init__(self):
         pass
 
-    def setup_scenario(self):
+    def setup_scenario(self, robot, teeths):
+        self._robot = robot
+        self._teeth = teeths
         pass
 
     def teardown_scenario(self):
         pass
     def update_scenario(self, step: float):
+        # self._robot.apply_action(ArticulationAction(joint_positions=np.array([0,-71.5,64.4,-83.0,251.9,-179.3])))
         pass
