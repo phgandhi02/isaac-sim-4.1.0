@@ -1,10 +1,6 @@
 # Directories I want to ignore:
 /exts/*/*/*
 /extsPhysics/*/*/*
-/extsUser/configToolingEx
-/extsUser/loadedScenarioEx
-/extsUser/scriptEx
-/extsUser/uiCompLib
 /extscache
 /PACKAGE-LICENSES
 /tests
