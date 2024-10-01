@@ -10,7 +10,7 @@ I need to get something together so that Andrew can apply what he is learning in
     - Create a scene with teeth on a conveyor, a UR robot, and get the footage from the camera and publish to a ROS2 topic. Save the images.
         1. Use existing script to load in teeth with random positions and orientations in grid fashion. Refer to example Scene.
         1. load in scene with ur5e manipulator, conveyor belt, and stand. Use existing usd file to do this.
-        1. create a camera_to_ROS_topic action graph using the Isaac Sim workflow to publish images to ROS2. Add to base scene usd file.
+        1. create a camera_to_ROS_topic action graph using the Isaac Sim workflow common omnigraphs tool to publish images to ROS2. Add to base scene usd file.
         1. create action graph to enable read and write joint states from/to UR5e in Isaac Sim. Add to base scene usd file.
         1. Use MoveIt2 to generate joint states for UR5e based on positions I set.
         1. Use Rviz2 to change the position of the UR5e which MoveIt2 will solve. 
