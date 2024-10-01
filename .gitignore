@@ -1,7 +1,10 @@
 # Directories I want to ignore:
 /exts/*/*/*
 /extsPhysics/*/*/*
-
+/extsUser/configToolingEx
+/extsUser/loadedScenarioEx
+/extsUser/scriptEx
+/extsUser/uiCompLib
 /extscache
 /PACKAGE-LICENSES
 /tests
@@ -24,12 +27,13 @@ VERSION
 !/exts/*/config/*
 !/extsPhysics/*/config/*
 
-# Files to ignore
+# Files to keep
 !*.py
 !*.pyi
 !*.toml
 !*.md
 
+#Files to ignore
 *.sh
 *.cmd
 *.ps1
