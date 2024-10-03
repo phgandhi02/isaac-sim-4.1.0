@@ -9,6 +9,7 @@
 
 import numpy as np
 import omni.timeline
+import carb
 import omni.ui as ui
 from omni.isaac.core.simulation_context.simulation_context import SimulationContext
 from omni.isaac.core.articulations import Articulation, ArticulationGripper
@@ -175,20 +176,26 @@ class UIBuilder:
 		robot_offset = torch.tensor([0.23385,0.30645,0.51141])
 		robot_orientation = torch.tensor([1,0,0,0])
 		robot_scale = torch.ones(3)
-		robot_prim_path = base_env_path + "/ur10e"
+		self.robot_prim_path = base_env_path + "/ur10e"
 		robot_joint_names = ["shoulder_lift_joint", "shoulder_pan_joint", "elbow_joint", "wrist_1_joint",
 							 "wrist_2_joint", "wrist_3_joint", "ee_joint"]
 		path_to_robot_usd = get_assets_root_path() + "/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd"
 		
+		self.camera_prim_path = self.robot_prim_path + "/panda_hand/geometry/realsense/realsense_camera"
+
+
 		path_to_conveyor_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/conveyor.usd"
 		conveyor_prim_path = base_env_path + "/env/conveyor"
-		conveyor_scale = torch.tensor([0.70154,0.3024,0.35089])
+		conveyor_scale = torch.tensor([1.5,0.5,0.5])
 		
 		path_to_teeth_usd = "/home/ise.ros/Documents/AndrewC/isaacSim/teeth_retainer.usd"
 		teeth_prim_path = base_env_path + "/env/teeth"
 
 		path_to_robotStand = get_assets_root_path() + "/Isaac/Props/Mounts/Stand/stand_instanceable.usd"
 		robotStand_prim_path = base_env_path + "/stand"
+
+		path_to_stage_scene = get_assets_root_path() + "/Isaac/Environments/Simple_Warehouse/warehouse_with_forklifts.usd"
+		stage_scene_prim_path = "/World/stage"
 		
 		# ---------------------------------------------------------------------------- #
 		#                                Load in objects                               #
@@ -199,25 +206,30 @@ class UIBuilder:
 		
 		# Setup scene
 		self._add_light_to_stage()
-		world.scene.add_default_ground_plane()
+		# world.scene.add_default_ground_plane()
   
 		# Load the UR10e
-		robotReference = add_reference_to_stage(path_to_robot_usd, robot_prim_path)
-		self.ur10 = world.scene.add(Robot(robot_prim_path,
-							  name="ur10",
-							  position=robot_offset,
-							  orientation=robot_orientation,
-							  scale=robot_scale,
-							  visible=True
-							  )
-						)
-		self.ur10.set_joint_positions(np.array([0,-71.5,64.4,-83.0,251.9,-179.3]))
+		# robotReference = add_reference_to_stage(path_to_robot_usd, self.robot_prim_path)
+		# self.ur10 = world.scene.add(Robot(self.robot_prim_path,
+		# 					  name="ur10",
+		# 					  position=robot_offset,
+		# 					  orientation=robot_orientation,
+		# 					  scale=robot_scale,
+		# 					  visible=True
+		# 					  )
+		# 				)
+		# self.ur10.set_joint_positions(np.array([0,-71.5,64.4,-83.0,251.9,-179.3]))
+		self.create_franka(self.robot_prim_path,(0.23385,0.30645+.2,0.72145))
 
 		# Load in workstation for robot
+		add_reference_to_stage(path_to_stage_scene, stage_scene_prim_path)
 		add_reference_to_stage(path_to_conveyor_usd, conveyor_prim_path)
 		add_reference_to_stage(path_to_robotStand, robotStand_prim_path)
 		add_reference_to_stage(path_to_teeth_usd, teeth_prim_path)
 		
+		realsense: Camera = world.scene.add(Camera(prim_path=self.camera_prim_path))
+		# realsense.set_horizontal_aperture(-.6)
+		# realsense.set_vertical_aperture(-.2)
   
 		world.scene.add(XFormPrim(conveyor_prim_path,
 							  name="conveyor",
@@ -229,7 +241,7 @@ class UIBuilder:
 						)
 		world.scene.add(XFormPrim(teeth_prim_path,
 							  name="teeth",
-							  position=torch.tensor([0,0,0.74331]),
+							  position=torch.tensor([0,0,1.673148*.6]),
 							  orientation=euler_angles_to_quat(torch.tensor([130,0,0])),
 							  scale=robot_scale,
 							  visible=True
@@ -238,17 +250,17 @@ class UIBuilder:
 
 		world.scene.add(XFormPrim(robotStand_prim_path,
 							  name="stand",
-							  position=torch.tensor([0.22771,0.30781,0.50644]),
+							  position=torch.tensor([0.22771,0.30781+.2,0.72145]),
 							  orientation=euler_angles_to_quat(torch.tensor([0,0,0])),
-							  scale=robot_scale,
+							  scale=torch.tensor([1,1,1]),
 							  visible=True
 							  )
 						)
 		
 		# instantiate teeth in grid pattern
-		num_clones = 20
+		num_clones = 3
 		teeth_orientation_offset = euler_angles_to_quat(torch.tensor([0,0,0]))
-		teeth_positions_offset = torch.tensor([0.2,0,0.74331]).repeat(num_clones,1)
+		teeth_positions_offset = torch.tensor([0.2,0,1.67314*.6]).repeat(num_clones,1)
 		random_teeth_position_offset = teeth_positions_offset + (-.05-.05)*torch.rand_like(teeth_positions_offset) + .05
 		random_teeth_orientation_offset = []#torch.Tensor([1,0,0,0])
 		for i in range(num_clones):
@@ -271,10 +283,101 @@ class UIBuilder:
 										)
 						)
 
+		self.create_ros_action_graph(self.robot_prim_path)
+		self.create_ros_camera_graph(self.camera_prim_path)
 		print('Teeth positions: \n')
 		print(teeth_positions)
 		print('\nTeeth orientation: \n')
 		print(teeth_orientations)
+  
+	def create_franka(self, stage_path, translation: tuple = (0, -0.64, 0)):
+		from pxr import Gf
+		import omni.kit.commands
+
+		stage = World.instance().stage
+		usd_path = "/Isaac/Robots/Franka/franka_alt_fingers.usd"
+		asset_path = get_assets_root_path() + usd_path
+		prim = stage.DefinePrim(stage_path, "Xform")
+		prim.GetReferences().AddReference(asset_path)
+		rot_mat = Gf.Matrix3d(Gf.Rotation((0, 0, 1), 90))
+		omni.kit.commands.execute(
+			"TransformPrimCommand",
+			path=prim.GetPath(),
+			old_transform_matrix=None,
+			new_transform_matrix=Gf.Matrix4d().SetRotate(rot_mat).SetTranslateOnly(Gf.Vec3d(translation)),
+		)
+		pass
+
+	def create_ros_action_graph(self, robot_stage_path):
+		import usdrt.Sdf
+		try:
+			og.Controller.edit(
+				{"graph_path": "/ActionGraph", "evaluator_name": "execution"},
+				{
+					og.Controller.Keys.CREATE_NODES: [
+						("OnPlaybackTick", "omni.graph.action.OnPlaybackTick"),
+						("ReadSimTime", "omni.isaac.core_nodes.IsaacReadSimulationTime"),
+						("Context", "omni.isaac.ros2_bridge.ROS2Context"),
+						("PublishJointState", "omni.isaac.ros2_bridge.ROS2PublishJointState"),
+						("SubscribeJointState", "omni.isaac.ros2_bridge.ROS2SubscribeJointState"),
+						("ArticulationController", "omni.isaac.core_nodes.IsaacArticulationController"),
+						("PublishClock", "omni.isaac.ros2_bridge.ROS2PublishClock"),
+					],
+					og.Controller.Keys.CONNECT: [
+						("OnPlaybackTick.outputs:tick", "PublishJointState.inputs:execIn"),
+						("OnPlaybackTick.outputs:tick", "SubscribeJointState.inputs:execIn"),
+						("OnPlaybackTick.outputs:tick", "PublishClock.inputs:execIn"),
+						("OnPlaybackTick.outputs:tick", "ArticulationController.inputs:execIn"),
+						("Context.outputs:context", "PublishJointState.inputs:context"),
+						("Context.outputs:context", "SubscribeJointState.inputs:context"),
+						("Context.outputs:context", "PublishClock.inputs:context"),
+						("ReadSimTime.outputs:simulationTime", "PublishJointState.inputs:timeStamp"),
+						("ReadSimTime.outputs:simulationTime", "PublishClock.inputs:timeStamp"),
+						("SubscribeJointState.outputs:jointNames", "ArticulationController.inputs:jointNames"),
+						(
+							"SubscribeJointState.outputs:positionCommand",
+							"ArticulationController.inputs:positionCommand",
+						),
+						(
+							"SubscribeJointState.outputs:velocityCommand",
+							"ArticulationController.inputs:velocityCommand",
+						),
+						("SubscribeJointState.outputs:effortCommand", "ArticulationController.inputs:effortCommand"),
+					],
+					og.Controller.Keys.SET_VALUES: [
+						# Setting the /Franka target prim to Articulation Controller node
+						("ArticulationController.inputs:robotPath", robot_stage_path),
+						("PublishJointState.inputs:topicName", "isaac_joint_states"),
+						("SubscribeJointState.inputs:topicName", "isaac_joint_commands"),
+						("PublishJointState.inputs:targetPrim", [usdrt.Sdf.Path(robot_stage_path)]),
+					],
+				},
+			)
+		except Exception as e:
+			print(e)
+		pass
+
+	def create_ros_camera_graph(self,camera_prim_path):
+		from omni.isaac.ros2_bridge.scripts.og_shortcuts.og_rtx_sensors import Ros2CameraGraph #, Ros2RtxLidarGraph
+		camera_graph = Ros2CameraGraph()
+		# camera_graph._og_path = camera_graph.og_path_input.get_value()
+		camera_graph._camera_prim = camera_prim_path
+		# camera_graph._frame_id = camera_graph.frame_id_input.get_value()
+		# camera_graph._node_namespace = camera_graph.node_namespace_input.get_value()
+		# camera_graph._rgb_topic = camera_graph.rgb_topic_input.get_value()
+		# camera_graph._depth_topic = camera_graph.depth_topic_input.get_value()
+		# camera_graph._depth_pcl_topic = camera_graph.depth_pcl_topic_input.get_value()
+		# camera_graph._instance_topic = camera_graph.instance_topic_input.get_value()
+		# camera_graph._semantic_topic = camera_graph.semantic_topic_input.get_value()
+		# camera_graph._bbox2d_tight_topic = camera_graph.bbox2d_tight_topic_input.get_value()
+		# camera_graph._bbox2d_loose_topic = camera_graph.bbox2d_loose_topic_input.get_value()
+		# camera_graph._bbox3d_topic = camera_graph.bbox3d_topic_input.get_value()
+
+		param_check = camera_graph._check_params()
+		if param_check:
+			camera_graph.make_graph()
+		else:
+			carb.log_error("Parameter check failed")
 
 	def _setup_scenario(self):
 		"""
@@ -294,7 +397,7 @@ class UIBuilder:
 
 	def _reset_scenario(self):
 		self._scenario.teardown_scenario()
-		self._scenario.setup_scenario(self._articulation, self._cuboid)
+		self._scenario.setup_scenario()
 
 	def _on_post_reset_btn(self):
 		"""
