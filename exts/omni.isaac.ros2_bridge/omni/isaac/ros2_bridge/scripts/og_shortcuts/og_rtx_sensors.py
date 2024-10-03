@@ -25,28 +25,28 @@ from pxr import OmniGraphSchema, UsdGeom
 
 class Ros2CameraGraph:
     def __init__(self):
-        self._og_path = "/Graph/ROS_Camera"
-        self._camera_prim = "/OmniverseKit_Persp"  # default camera prim is the perspective camera
-        self._add_to_existing_graph = False
-        self._frame_id = "sim_camera"
-        self._node_namespace = ""
-        self._camera_info_topic = "camera_info"
-        self._rgb_pub = True
-        self._rgb_topic = "/rgb"
-        self._depth_pub = True
-        self._depth_topic = "/depth"
-        self._depth_pcl_pub = False
-        self._depth_pcl_topic = "/depth_pcl"
-        self._instance_pub = False
-        self._instance_topic = "/instance_segmentation"
-        self._semantic_pub = False
-        self._semantic_topic = "/semantic_segmentation"
-        self._bbox2d_tight_pub = False
-        self._bbox2d_tight_topic = "/bbox_2d_tight"
-        self._bbox2d_loose_pub = False
-        self._bbox2d_loose_topic = "/bbox_2d_loose"
-        self._bbox3d_pub = False
-        self._bbox3d_topic = "/bbox_3d"
+        self._og_path: str = "/Graph/ROS_Camera"
+        self._camera_prim: str = "/OmniverseKit_Persp"  # default camera prim is the perspective camera
+        self._add_to_existing_graph: bool = False
+        self._frame_id: str = "sim_camera"
+        self._node_namespace: str = ""
+        self._camera_info_topic: str = "camera_info"
+        self._rgb_pub: bool = True
+        self._rgb_topic: str = "/rgb"
+        self._depth_pub: bool = True
+        self._depth_topic: str = "/depth"
+        self._depth_pcl_pub: bool = False
+        self._depth_pcl_topic: str = "/depth_pcl"
+        self._instance_pub: bool = False
+        self._instance_topic: str = "/instance_segmentation"
+        self._semantic_pub: bool = False
+        self._semantic_topic: str = "/semantic_segmentation"
+        self._bbox2d_tight_pub: bool = False
+        self._bbox2d_tight_topic: str = "/bbox_2d_tight"
+        self._bbox2d_loose_pub: bool = False
+        self._bbox2d_loose_topic: str = "/bbox_2d_loose"
+        self._bbox3d_pub: bool = False
+        self._bbox3d_topic: str = "/bbox_3d"
 
     def make_graph(self):
         self._timeline = omni.timeline.get_timeline_interface()
