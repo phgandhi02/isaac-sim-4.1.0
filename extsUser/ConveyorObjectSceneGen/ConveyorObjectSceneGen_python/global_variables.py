@@ -7,6 +7,6 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 #
 
-EXTENSION_TITLE = "teethAutomationSceneGen"
+EXTENSION_TITLE = "ConveyorObjectSceneGen"
 
 EXTENSION_DESCRIPTION = "This extension loads in a scene with teeth oriented in random positions and orientations over a conveyor belt. A UR5e is loaded in as well. The scene features 3 actions graphs that will pass the camera and joint states as topics."
